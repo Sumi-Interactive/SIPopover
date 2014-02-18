@@ -18,4 +18,7 @@
 @property (nonatomic, assign) SIPopoverTransitionStyle transitionStyle;
 @property (nonatomic, assign) SIPopoverBackgroundEffect backgroundEffect;
 
+- (void)transitionInCompletion:(void(^)(BOOL finished))completion;
+- (void)transitionOutCompletion:(void(^)(BOOL finished))completion;
+
 @end

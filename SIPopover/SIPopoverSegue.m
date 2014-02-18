@@ -11,7 +11,11 @@
 
 - (void)perform
 {
-    [self.sourceViewController si_presentPopover:self.destinationViewController transitionStyle:self.transitionStyle];
+    NSTimeInterval duration = self.duration <= 0 ? 0.4 : self.duration;
+    [self.sourceViewController si_presentPopover:self.destinationViewController
+                                 transitionStyle:self.transitionStyle
+                                backgroundEffect:self.backgroundEffect
+                                        duration:duration];
 }
 
 @end
