@@ -10,8 +10,9 @@
 
 @interface SIPopoverSegue : UIStoryboardSegue
 
-@property (nonatomic, assign) NSTimeInterval duration;
+@property (nonatomic, assign) SIPopoverGravity gravity;
 @property (nonatomic, assign) SIPopoverTransitionStyle transitionStyle;
 @property (nonatomic, assign) SIPopoverBackgroundEffect backgroundEffect;
+@property (nonatomic, assign) NSTimeInterval duration;
 
 @end

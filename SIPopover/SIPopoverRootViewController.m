@@ -87,17 +87,28 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
+    
     CGFloat width = CGRectGetWidth(self.containerView.bounds);
     CGFloat height = CGRectGetHeight(self.containerView.bounds);
     CGSize size = [self.contentViewController preferredContentSize];
-    CGFloat x = (width - size.width) / 2 + self.contentViewController.si_popoverOffset.horizontal;
-    CGFloat y = (height - size.height) / 2 + self.contentViewController.si_popoverOffset.vertical;
+    CGFloat x = (width - size.width) / 2;
+    x += self.contentViewController.si_popoverOffset.horizontal;
+    CGFloat y;
+    switch (self.gravity) {
+        case SIPopoverGravityNone:
+            y = (height - size.height) / 2;
+            y += self.contentViewController.si_popoverOffset.vertical;
+            break;
+        case SIPopoverGravityBottom:
+            y = height - size.height;
+            y -= self.contentViewController.si_popoverOffset.vertical;
+            break;
+        case SIPopoverGravityTop:
+            y = 0;
+            y += self.contentViewController.si_popoverOffset.vertical;
+            break;
+    }
     self.contentViewController.view.frame = CGRectMake(x, y, size.width, size.height);
-}
-
-- (CGFloat)windowHeight
-{
-    return UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation) ? CGRectGetWidth(self.view.window.bounds) : CGRectGetHeight(self.view.window.bounds);
 }
 
 - (void)transitionInCompletion:(void (^)(BOOL finished))completion

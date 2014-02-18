@@ -21,12 +21,19 @@ typedef NS_ENUM(NSInteger, SIPopoverBackgroundEffect) {
     SIPopoverBackgroundEffectPushBack = 1 << 3,
 };
 
+typedef NS_ENUM(NSInteger, SIPopoverGravity) {
+    SIPopoverGravityNone = 0,
+    SIPopoverGravityBottom,
+    SIPopoverGravityTop,
+};
+
 @interface UIViewController (SIPopover)
 
 - (UIOffset)si_popoverOffset;
 
-- (void)si_presentPopover:(UIViewController *)viewController transitionStyle:(SIPopoverTransitionStyle)transitionStyle;
-- (void)si_presentPopover:(UIViewController *)viewController transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect;
-- (void)si_presentPopover:(UIViewController *)viewController transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect duration:(NSTimeInterval)duration;
+- (void)si_presentPopover:(UIViewController *)viewController;
+- (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle;
+- (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect;
+- (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect duration:(NSTimeInterval)duration;
 
 @end

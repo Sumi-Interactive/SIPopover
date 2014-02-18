@@ -17,22 +17,23 @@
 
 - (void)si_presentPopover:(UIViewController *)viewController
 {
-    [self si_presentPopover:viewController transitionStyle:SIPopoverTransitionStyleSlideFromBottom backgroundEffect:SIPopoverBackgroundEffectDarken duration:0.4];
+    [self si_presentPopover:viewController gravity:SIPopoverGravityNone transitionStyle:SIPopoverTransitionStyleSlideFromBottom backgroundEffect:SIPopoverBackgroundEffectDarken duration:0.4];
 }
 
-- (void)si_presentPopover:(UIViewController *)viewController transitionStyle:(SIPopoverTransitionStyle)transitionStyle
+- (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle
 {
-    [self si_presentPopover:viewController transitionStyle:transitionStyle backgroundEffect:SIPopoverBackgroundEffectDarken duration:0.4];
+    [self si_presentPopover:viewController gravity:gravity transitionStyle:transitionStyle backgroundEffect:SIPopoverBackgroundEffectDarken duration:0.4];
 }
 
-- (void)si_presentPopover:(UIViewController *)viewController transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect
+- (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect
 {
-    [self si_presentPopover:viewController transitionStyle:transitionStyle backgroundEffect:backgroundEffect duration:0.4];
+    [self si_presentPopover:viewController gravity:gravity transitionStyle:transitionStyle backgroundEffect:backgroundEffect duration:0.4];
 }
 
-- (void)si_presentPopover:(UIViewController *)viewController transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect duration:(NSTimeInterval)duration
+- (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect duration:(NSTimeInterval)duration
 {
     SIPopoverRootViewController *rootViewController = [[SIPopoverRootViewController alloc] initWithContentViewController:viewController];
+    rootViewController.gravity = gravity;
     rootViewController.transitionStyle = transitionStyle;
     rootViewController.backgroundEffect = backgroundEffect;
     rootViewController.duration = duration;

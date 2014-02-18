@@ -13,6 +13,7 @@
 {
     NSTimeInterval duration = self.duration <= 0 ? 0.4 : self.duration;
     [self.sourceViewController si_presentPopover:self.destinationViewController
+                                         gravity:self.gravity
                                  transitionStyle:self.transitionStyle
                                 backgroundEffect:self.backgroundEffect
                                         duration:duration];
