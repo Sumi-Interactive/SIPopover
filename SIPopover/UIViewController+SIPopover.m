@@ -15,6 +15,8 @@
     return UIOffsetZero;
 }
 
+#pragma mark - UIViewController Custom Transition
+
 - (void)si_presentPopover:(UIViewController *)viewController
 {
     [self si_presentPopover:viewController gravity:SIPopoverGravityNone transitionStyle:SIPopoverTransitionStyleSlideFromBottom backgroundEffect:SIPopoverBackgroundEffectDarken duration:0.4];
@@ -38,6 +40,24 @@
     rootViewController.backgroundEffect = backgroundEffect;
     rootViewController.duration = duration;
 	[self presentViewController:rootViewController animated:YES completion:nil];
+}
+
+#pragma mark - Navigation Controller Custom Transition
+
+- (void)si_pushPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle
+{
+    [self si_pushPopover:viewController gravity:gravity transitionStyle:transitionStyle backgroundEffect:SIPopoverBackgroundEffectDarken duration:0.4];
+}
+
+- (void)si_pushPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect duration:(NSTimeInterval)duration
+{
+    SIPopoverRootViewController *rootViewController = [[SIPopoverRootViewController alloc] initWithContentViewController:viewController];
+    rootViewController.gravity = gravity;
+    rootViewController.transitionStyle = transitionStyle;
+    rootViewController.backgroundEffect = backgroundEffect;
+    rootViewController.duration = duration;
+    self.navigationController.delegate = rootViewController;
+    [self.navigationController pushViewController:rootViewController animated:YES];
 }
 
 @end
