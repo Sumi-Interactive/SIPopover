@@ -70,13 +70,10 @@ static NSInteger const kSnapshotViewTag = 999;
         // Only for navigation controller pop
         if (isNavigationPop) {
             [containerView insertSubview:toViewController.view atIndex:0];
-            
-            [containerView.subviews enumerateObjectsUsingBlock:^(UIView *obj, NSUInteger idx, BOOL *stop) {
-                if (obj.tag == kSnapshotViewTag) {
-                    [obj removeFromSuperview];
-                    *stop = YES;
-                }
-            }];
+            UIView *snapshotView = [containerView viewWithTag:kSnapshotViewTag];
+            if (snapshotView) {
+                [snapshotView removeFromSuperview];
+            }
         }
         [popoverRootViewController transitionOutCompletion:completion];
         toViewController.view.tintAdjustmentMode = UIViewTintAdjustmentModeAutomatic;
