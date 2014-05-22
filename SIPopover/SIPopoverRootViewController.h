@@ -8,7 +8,7 @@
 #import <UIKit/UIKit.h>
 #import "UIViewController+SIPopover.h"
 
-@interface SIPopoverRootViewController : UIViewController
+@interface SIPopoverRootViewController : UIViewController <UINavigationControllerDelegate>
 
 @property (nonatomic, strong, readonly) UIViewController *contentViewController;
 

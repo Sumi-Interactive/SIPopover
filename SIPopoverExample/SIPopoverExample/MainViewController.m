@@ -30,9 +30,12 @@
 {
     switch (indexPath.section) {
         case 0:
-            self.params[@"gravity"] = @(indexPath.row);
+            return;
             break;
         case 1:
+            self.params[@"gravity"] = @(indexPath.row);
+            break;
+        case 2:
             self.params[@"transitionStyle"] = @(indexPath.row);
             break;
         default:
@@ -50,9 +53,15 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    SIPopoverSegue *popover = (SIPopoverSegue *)segue;
-    popover.gravity = [self.params[@"gravity"] integerValue];
-    popover.transitionStyle = [self.params[@"transitionStyle"] integerValue];
+    if ([segue.identifier isEqual:@"ShowPopover"]) {
+        SIPopoverSegue *popover = (SIPopoverSegue *)segue;
+        popover.gravity = [self.params[@"gravity"] integerValue];
+        popover.transitionStyle = [self.params[@"transitionStyle"] integerValue];
+    } else if ([segue.identifier isEqual:@"ShowNavigationPopover"]) {
+        SINavigationPopoverSegue *popover = (SINavigationPopoverSegue *)segue;
+        popover.gravity = [self.params[@"gravity"] integerValue];
+        popover.transitionStyle = [self.params[@"transitionStyle"] integerValue];
+    }
 }
 
 - (IBAction)dismissAction:(UIStoryboardSegue *)segue

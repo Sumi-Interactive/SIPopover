@@ -247,6 +247,19 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     }
 }
 
+#pragma mark - UINavigationControllerDelegate
+
+- (id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+                                   animationControllerForOperation:(UINavigationControllerOperation)operation
+                                                fromViewController:(UIViewController *)fromVC
+                                                  toViewController:(UIViewController *)toVC
+{
+    SIPopoverAnimator *animator = [[SIPopoverAnimator alloc] init];
+    animator.operation = operation;
+    animator.duration = self.duration;
+    return animator;
+}
+
 #pragma mark - UIViewControllerTransitioningDelegate
 
 - (id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
