@@ -16,7 +16,7 @@ static NSInteger const kSnapshotViewTag = 999;
 {
     self = [super init];
     if (self) {
-        self.duration = 0.4;
+        self.duration = 0.8;
     }
     return self;
 }
