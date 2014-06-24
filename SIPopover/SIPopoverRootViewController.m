@@ -123,8 +123,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             contentView.frame = rect;
             [UIView animateWithDuration:self.duration
                                   delay:0
-                 usingSpringWithDamping:0.9
-                  initialSpringVelocity:0.9
+                 usingSpringWithDamping:1
+                  initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
                                  contentView.frame = originalFrame;
@@ -141,8 +141,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             contentView.frame = rect;
             [UIView animateWithDuration:self.duration
                                   delay:0
-                 usingSpringWithDamping:0.9
-                  initialSpringVelocity:0.9
+                 usingSpringWithDamping:1
+                  initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
                                  contentView.frame = originalFrame;
@@ -157,7 +157,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:0.5
-                  initialSpringVelocity:0.5
+                  initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
                                  contentView.transform = CGAffineTransformIdentity;
@@ -183,8 +183,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
         {
             [UIView animateWithDuration:self.duration
                                   delay:0
-                 usingSpringWithDamping:0.9
-                  initialSpringVelocity:0.9
+                 usingSpringWithDamping:1
+                  initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
                                  CGRect rect = contentView.frame;
@@ -199,8 +199,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             CGFloat containerHeight = CGRectGetHeight(self.view.bounds);
             [UIView animateWithDuration:self.duration
                                   delay:0
-                 usingSpringWithDamping:0.9
-                  initialSpringVelocity:0.9
+                 usingSpringWithDamping:1
+                  initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
                                  CGRect rect = contentView.frame;
