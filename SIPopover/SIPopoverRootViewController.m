@@ -123,6 +123,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             contentView.frame = rect;
             [UIView animateWithDuration:self.duration
                                   delay:0
+                 usingSpringWithDamping:0.9
+                  initialSpringVelocity:0.9
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
                                  contentView.frame = originalFrame;
@@ -139,6 +141,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             contentView.frame = rect;
             [UIView animateWithDuration:self.duration
                                   delay:0
+                 usingSpringWithDamping:0.9
+                  initialSpringVelocity:0.9
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
                                  contentView.frame = originalFrame;
@@ -150,23 +154,16 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
         {
             contentView.transform = CGAffineTransformMakeScale(0.8, 0.8);
             contentView.alpha = 0;
-            [UIView animateKeyframesWithDuration:self.duration
-                                           delay:0
-                                         options:UIViewKeyframeAnimationOptionCalculationModeLinear
-                                      animations:^{
-                                          [UIView addKeyframeWithRelativeStartTime:0
-                                                                  relativeDuration:0.8
-                                                                        animations:^{
-                                                                            contentView.transform = CGAffineTransformMakeScale(1.1, 1.1);
-                                                                            contentView.alpha = 1;
-                                                                        }];
-                                          [UIView addKeyframeWithRelativeStartTime:0.8
-                                                                  relativeDuration:0.2
-                                                                        animations:^{
-                                                                            contentView.transform = CGAffineTransformIdentity;
-                                                                        }];
-                                      }
-                                      completion:completion];
+            [UIView animateWithDuration:self.duration
+                                  delay:0
+                 usingSpringWithDamping:0.5
+                  initialSpringVelocity:0.5
+                                options:UIViewAnimationOptionCurveEaseOut
+                             animations:^{
+                                 contentView.transform = CGAffineTransformIdentity;
+                                 contentView.alpha = 1;
+                             }
+                             completion:completion];
         }
             break;
     }
@@ -186,6 +183,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
         {
             [UIView animateWithDuration:self.duration
                                   delay:0
+                 usingSpringWithDamping:0.9
+                  initialSpringVelocity:0.9
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
                                  CGRect rect = contentView.frame;
@@ -200,6 +199,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             CGFloat containerHeight = CGRectGetHeight(self.view.bounds);
             [UIView animateWithDuration:self.duration
                                   delay:0
+                 usingSpringWithDamping:0.9
+                  initialSpringVelocity:0.9
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
                                  CGRect rect = contentView.frame;
