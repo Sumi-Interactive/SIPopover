@@ -31,6 +31,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
         _contentViewController = rootViewController;
         self.modalPresentationStyle = UIModalPresentationCustom;
         self.transitioningDelegate = self;
+        [_contentViewController addObserver:self forKeyPath:PreferredContentSizeKeyPath options:NSKeyValueObservingOptionNew context:nil];
     }
     return self;
 }
@@ -52,8 +53,6 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     [self addChildViewController:self.contentViewController];
     [self.containerView addSubview:self.contentViewController.view];
     [self.contentViewController didMoveToParentViewController:self];
-    
-    [self.contentViewController addObserver:self forKeyPath:PreferredContentSizeKeyPath options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
