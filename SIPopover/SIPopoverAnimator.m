@@ -65,7 +65,10 @@ static NSInteger const kSnapshotViewTag = 999;
         [toViewController.view layoutIfNeeded];
         
         [popoverRootViewController transitionInCompletion:completion];
-        fromViewController.view.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
+        
+        toViewController.view.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
+        UIWindow *mainWindow = [UIApplication sharedApplication].windows[0];
+        mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
     } else {
         // Only for navigation controller pop
         if (isNavigationPop) {
@@ -76,7 +79,9 @@ static NSInteger const kSnapshotViewTag = 999;
             }
         }
         [popoverRootViewController transitionOutCompletion:completion];
-        toViewController.view.tintAdjustmentMode = UIViewTintAdjustmentModeAutomatic;
+        
+        UIWindow *mainWindow = [UIApplication sharedApplication].windows[0];
+        mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
     }
 }
 
