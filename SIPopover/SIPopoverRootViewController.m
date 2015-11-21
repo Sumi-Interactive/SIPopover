@@ -57,7 +57,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 
 - (void)viewWillAppear:(BOOL)animated
 {
-	[super viewWillAppear:animated];
+    [super viewWillAppear:animated];
     
     [self.contentViewController viewWillAppear:animated];
 }
@@ -71,7 +71,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-	[super viewWillDisappear:animated];
+    [super viewWillDisappear:animated];
     
     [self.contentViewController viewWillDisappear:animated];
 }
@@ -113,6 +113,9 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 - (void)transitionInCompletion:(void (^)(BOOL finished))completion
 {
     UIView *contentView = self.contentViewController.view;
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(contentView);
+    
     switch (self.transitionStyle) {
         case SIPopoverTransitionStyleSlideFromTop:
         {
@@ -133,18 +136,32 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             break;
         case SIPopoverTransitionStyleSlideFromBottom:
         {
+            contentView.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[contentView]-|"
+                                                                                     options:0
+                                                                                     metrics:nil
+                                                                                       views:views];
+            
+            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                          attribute:NSLayoutAttributeBottom
+                                                                          relatedBy:NSLayoutRelationEqual
+                                                                             toItem:contentView.superview
+                                                                          attribute:NSLayoutAttributeBottom
+                                                                         multiplier:1
+                                                                           constant:0];
+            [contentView.superview addConstraints:horizontalConstraints];
+            [contentView.superview addConstraints:@[constraint]];
+            
             CGFloat containerHeight = CGRectGetHeight(self.view.bounds);
-            CGRect originalFrame = contentView.frame;
-            CGRect rect = contentView.frame;
-            rect.origin.y = containerHeight;
-            contentView.frame = rect;
+            contentView.transform = CGAffineTransformMakeTranslation(0, containerHeight);
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:1
                   initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
-                                 contentView.frame = originalFrame;
+                                 contentView.transform = CGAffineTransformIdentity;
                              }
                              completion:completion];
         }
@@ -202,9 +219,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
                   initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
-                                 CGRect rect = contentView.frame;
-                                 rect.origin.y = containerHeight;
-                                 contentView.frame = rect;
+                                 contentView.transform = CGAffineTransformMakeTranslation(0, containerHeight);
                              }
                              completion:completion];
         }
