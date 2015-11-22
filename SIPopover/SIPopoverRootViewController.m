@@ -153,7 +153,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             [contentView.superview addConstraints:horizontalConstraints];
             [contentView.superview addConstraints:@[constraint]];
             
-            CGFloat containerHeight = CGRectGetHeight(self.view.bounds);
+            CGFloat containerHeight = CGRectGetHeight(contentView.bounds);
             contentView.transform = CGAffineTransformMakeTranslation(0, containerHeight);
             [UIView animateWithDuration:self.duration
                                   delay:0
@@ -212,7 +212,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             break;
         case SIPopoverTransitionStyleSlideFromBottom:
         {
-            CGFloat containerHeight = CGRectGetHeight(self.view.bounds);
+            CGFloat containerHeight = CGRectGetHeight(contentView.bounds);
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:1
