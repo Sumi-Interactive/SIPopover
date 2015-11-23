@@ -138,7 +138,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
         {
             contentView.translatesAutoresizingMaskIntoConstraints = NO;
             
-            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[contentView]-|"
+            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contentView]|"
                                                                                      options:0
                                                                                      metrics:nil
                                                                                        views:views];
