@@ -212,14 +212,16 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             break;
         case SIPopoverTransitionStyleSlideFromBottom:
         {
-            CGFloat containerHeight = CGRectGetHeight(contentView.bounds);
+            CGFloat containerHeight = CGRectGetHeight(self.view.bounds);
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:1
                   initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
-                                 contentView.transform = CGAffineTransformMakeTranslation(0, containerHeight);
+                                 CGRect rect = contentView.frame;
+                                 rect.origin.y = containerHeight;
+                                 contentView.frame = rect;
                              }
                              completion:completion];
         }
