@@ -110,6 +110,20 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     self.contentViewController.view.frame = CGRectMake(x, y, size.width, size.height);
 }
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesBegan:touches withEvent:event];
+    if (self.tapBackgroundToDissmiss) {
+        UITouch *touch = [[touches allObjects] objectAtIndex:0];
+        CGPoint touchPoint = [touch locationInView:self.view];
+        if (!CGRectContainsPoint(self.contentViewController.view.frame, touchPoint)) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    }
+}
+
+#pragma mark - Transition
+
 - (void)transitionInCompletion:(void (^)(BOOL finished))completion
 {
     UIView *contentView = self.contentViewController.view;

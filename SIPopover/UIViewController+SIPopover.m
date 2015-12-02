@@ -37,7 +37,8 @@
     rootViewController.transitionStyle = transitionStyle;
     rootViewController.backgroundEffect = backgroundEffect;
     rootViewController.duration = duration;
-	[self presentViewController:rootViewController animated:YES completion:nil];
+    rootViewController.tapBackgroundToDissmiss = YES;
+    [self presentViewController:rootViewController animated:YES completion:nil];
 }
 
 @end

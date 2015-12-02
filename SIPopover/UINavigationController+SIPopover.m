@@ -23,8 +23,10 @@
     rootViewController.transitionStyle = transitionStyle;
     rootViewController.backgroundEffect = backgroundEffect;
     rootViewController.duration = duration;
+    rootViewController.tapBackgroundToDissmiss = YES;
     self.delegate = rootViewController;
     [self pushViewController:rootViewController animated:YES];
 }
 
 @end
+
