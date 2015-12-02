@@ -154,6 +154,17 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             [contentView.superview addConstraints:@[constraint]];
             
             CGFloat containerHeight = CGRectGetHeight(contentView.bounds);
+            
+            NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                                attribute:NSLayoutAttributeHeight
+                                                                                relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                                   toItem:nil
+                                                                                attribute:0
+                                                                               multiplier:1.0
+                                                                                 constant:containerHeight];
+            [contentView addConstraint:heightConstraint];
+            
+            
             contentView.transform = CGAffineTransformMakeTranslation(0, containerHeight);
             [UIView animateWithDuration:self.duration
                                   delay:0
