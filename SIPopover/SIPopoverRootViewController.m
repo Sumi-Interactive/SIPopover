@@ -68,6 +68,81 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     [self addChildViewController:self.contentViewController];
     [self.containerView addSubview:self.contentViewController.view];
     [self.contentViewController didMoveToParentViewController:self];
+    
+    [self setupContentView];
+}
+
+- (void)setupContentView
+{
+    CGSize size = [self.contentViewController preferredContentSize];
+    
+    UIView *contentView = self.contentViewController.view;
+    
+    contentView.translatesAutoresizingMaskIntoConstraints = NO;
+    NSLayoutConstraint *horizontalCenterConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                                  attribute:NSLayoutAttributeCenterX
+                                                                                  relatedBy:NSLayoutRelationEqual
+                                                                                     toItem:contentView.superview
+                                                                                  attribute:NSLayoutAttributeCenterX
+                                                                                 multiplier:1.0
+                                                                                   constant:0];
+    [contentView.superview addConstraint:horizontalCenterConstraint];
+    
+    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                        attribute:NSLayoutAttributeHeight
+                                                                        relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                           toItem:nil
+                                                                        attribute:0
+                                                                       multiplier:1.0
+                                                                         constant:size.height];
+    [contentView addConstraint:heightConstraint];
+    
+    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                       attribute:NSLayoutAttributeWidth
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:nil
+                                                                       attribute:0
+                                                                      multiplier:1.0
+                                                                        constant:size.width];
+    [contentView addConstraint:widthConstraint];
+    switch (self.gravity) {
+        case SIPopoverGravityNone:{
+            NSLayoutConstraint *verticalCenterConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                                        attribute:NSLayoutAttributeCenterY
+                                                                                        relatedBy:NSLayoutRelationEqual
+                                                                                           toItem:contentView.superview
+                                                                                        attribute:NSLayoutAttributeCenterY
+                                                                                       multiplier:1
+                                                                                         constant:0];
+            
+            [contentView.superview addConstraint:verticalCenterConstraint];
+        }
+            break;
+        case SIPopoverGravityBottom: {
+            NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                                attribute:NSLayoutAttributeBottom
+                                                                                relatedBy:NSLayoutRelationEqual
+                                                                                   toItem:contentView.superview
+                                                                                attribute:NSLayoutAttributeBottom
+                                                                               multiplier:1
+                                                                                 constant:0];
+            
+            [contentView.superview addConstraint:bottomConstraint];
+        }
+            break;
+        case SIPopoverGravityTop: {
+            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                             attribute:NSLayoutAttributeTop
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:contentView.superview
+                                                                             attribute:NSLayoutAttributeTop
+                                                                            multiplier:1
+                                                                              constant:0];
+            
+            [contentView.superview addConstraint:topConstraint];
+        }
+            break;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -102,27 +177,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 {
     [super viewWillLayoutSubviews];
     
-    CGFloat width = CGRectGetWidth(self.containerView.bounds);
-    CGFloat height = CGRectGetHeight(self.containerView.bounds);
-    CGSize size = [self.contentViewController preferredContentSize];
-    CGFloat x = (width - size.width) / 2;
-    x += self.contentViewController.si_popoverOffset.horizontal;
-    CGFloat y;
-    switch (self.gravity) {
-        case SIPopoverGravityNone:
-            y = (height - size.height) / 2;
-            y += self.contentViewController.si_popoverOffset.vertical;
-            break;
-        case SIPopoverGravityBottom:
-            y = height - size.height;
-            y -= self.contentViewController.si_popoverOffset.vertical;
-            break;
-        case SIPopoverGravityTop:
-            y = 0;
-            y += self.contentViewController.si_popoverOffset.vertical;
-            break;
-    }
-    self.contentViewController.view.frame = CGRectMake(x, y, size.width, size.height);
+    
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -142,58 +197,24 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 - (void)transitionInCompletion:(void (^)(BOOL finished))completion
 {
     UIView *contentView = self.contentViewController.view;
-    
-    NSDictionary *views = NSDictionaryOfVariableBindings(contentView);
-    
+    CGFloat containerHeight = CGRectGetHeight(contentView.bounds);
     switch (self.transitionStyle) {
         case SIPopoverTransitionStyleSlideFromTop:
         {
-            CGRect originalFrame = contentView.frame;
-            CGRect rect = contentView.frame;
-            rect.origin.y = -CGRectGetHeight(rect);
-            contentView.frame = rect;
+            contentView.transform = CGAffineTransformMakeTranslation(0, -containerHeight);
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:1
                   initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
-                                 contentView.frame = originalFrame;
+                                 contentView.transform = CGAffineTransformIdentity;
                              }
                              completion:completion];
         }
             break;
         case SIPopoverTransitionStyleSlideFromBottom:
         {
-            contentView.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contentView]|"
-                                                                                     options:0
-                                                                                     metrics:nil
-                                                                                       views:views];
-            
-            NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:contentView
-                                                                          attribute:NSLayoutAttributeBottom
-                                                                          relatedBy:NSLayoutRelationEqual
-                                                                             toItem:contentView.superview
-                                                                          attribute:NSLayoutAttributeBottom
-                                                                         multiplier:1
-                                                                           constant:0];
-            [contentView.superview addConstraints:horizontalConstraints];
-            [contentView.superview addConstraints:@[constraint]];
-            
-            CGFloat containerHeight = CGRectGetHeight(contentView.bounds);
-            
-            NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:contentView
-                                                                                attribute:NSLayoutAttributeHeight
-                                                                                relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                                   toItem:nil
-                                                                                attribute:0
-                                                                               multiplier:1.0
-                                                                                 constant:containerHeight];
-            [contentView addConstraint:heightConstraint];
-            
-            
             contentView.transform = CGAffineTransformMakeTranslation(0, containerHeight);
             [UIView animateWithDuration:self.duration
                                   delay:0
