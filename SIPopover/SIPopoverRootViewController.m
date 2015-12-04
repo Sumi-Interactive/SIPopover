@@ -42,7 +42,22 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     
     self.dimView = [[UIView alloc] initWithFrame:self.view.bounds];
     self.dimView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.dimView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    switch (self.backgroundEffect) {
+        case SIPopoverBackgroundEffectNone:
+            self.dimView.backgroundColor = [UIColor clearColor];
+            break;
+        case SIPopoverBackgroundEffectDarken:
+            self.dimView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+            break;
+        case SIPopoverBackgroundEffectLighten:
+            self.dimView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
+            break;
+            
+        default:
+            NSLog(@"Warnning: undefine background effect");
+            break;
+    }
+    
     [self.view addSubview:self.dimView];
     
     self.containerView = [[UIView alloc] initWithFrame:self.view.bounds];
