@@ -70,6 +70,9 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     [self.contentViewController didMoveToParentViewController:self];
     
     [self setupContentView];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapBackgroundHandler:)];
+    [self.containerView addGestureRecognizer:tapGesture];
 }
 
 - (void)setupContentView
@@ -173,20 +176,11 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     [self.contentViewController viewDidDisappear:animated];
 }
 
-- (void)viewWillLayoutSubviews
+- (void)tapBackgroundHandler:(UITapGestureRecognizer *)gesture
 {
-    [super viewWillLayoutSubviews];
-    
-    
-}
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [super touchesBegan:touches withEvent:event];
     if (self.tapBackgroundToDissmiss) {
-        UITouch *touch = [[touches allObjects] objectAtIndex:0];
-        CGPoint touchPoint = [touch locationInView:self.view];
-        if (!CGRectContainsPoint(self.contentViewController.view.frame, touchPoint)) {
+        CGPoint location = [gesture locationInView:gesture.view];
+        if (!CGRectContainsPoint(self.contentViewController.view.frame, location)) {
             [self dismissViewControllerAnimated:YES completion:nil];
         }
     }
