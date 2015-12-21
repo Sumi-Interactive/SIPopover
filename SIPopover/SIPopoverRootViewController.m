@@ -10,7 +10,7 @@
 
 static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 
-@interface SIPopoverRootViewController () <UIViewControllerTransitioningDelegate>
+@interface SIPopoverRootViewController () <UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIView *dimView;
 @property (nonatomic, strong) UIView *containerView;
@@ -72,6 +72,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     [self setupContentView];
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapBackgroundHandler:)];
+    tapGesture.delegate = self;
     [self.containerView addGestureRecognizer:tapGesture];
 }
 
@@ -176,6 +177,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     [self.contentViewController viewDidDisappear:animated];
 }
 
+#pragma mark - Gesture
+
 - (void)tapBackgroundHandler:(UITapGestureRecognizer *)gesture
 {
     if (self.tapBackgroundToDissmiss) {
@@ -184,6 +187,11 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
             [self dismissViewControllerAnimated:YES completion:nil];
         }
     }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    return touch.view == self.containerView;
 }
 
 #pragma mark - Transition
