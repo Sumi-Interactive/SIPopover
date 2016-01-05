@@ -83,6 +83,16 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     [self.contentViewController viewDidDisappear:animated];
 }
 
+- (UIViewController *)childViewControllerForStatusBarStyle
+{
+    return self.contentViewController;
+}
+
+- (UIViewController *)childViewControllerForStatusBarHidden
+{
+    return self.contentViewController;
+}
+
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
