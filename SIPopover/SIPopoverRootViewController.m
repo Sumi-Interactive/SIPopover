@@ -15,6 +15,9 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 @property (nonatomic, strong) UIView *dimView;
 @property (nonatomic, strong) UIView *containerView;
 
+@property (nonatomic, assign) UIStatusBarStyle savedStyle;
+@property (nonatomic, assign) BOOL savedHidden;
+
 @end
 
 @implementation SIPopoverRootViewController
@@ -39,6 +42,9 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.savedStyle = [UIApplication sharedApplication].statusBarStyle;
+    self.savedHidden = [UIApplication sharedApplication].statusBarHidden;
     
     self.dimView = [[UIView alloc] initWithFrame:self.view.bounds];
     self.dimView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -83,14 +89,14 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     [self.contentViewController viewDidDisappear:animated];
 }
 
-- (UIViewController *)childViewControllerForStatusBarStyle
+- (UIStatusBarStyle)preferredStatusBarStyle
 {
-    return self.contentViewController;
+    return self.savedStyle;
 }
 
-- (UIViewController *)childViewControllerForStatusBarHidden
+- (BOOL)prefersStatusBarHidden
 {
-    return self.contentViewController;
+    return self.savedHidden;
 }
 
 - (void)viewWillLayoutSubviews
