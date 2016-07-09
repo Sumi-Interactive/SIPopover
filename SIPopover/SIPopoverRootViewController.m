@@ -29,7 +29,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     self = [super init];
     if (self) {
         _contentViewController = rootViewController;
-        self.modalPresentationStyle = UIModalPresentationCustom;
+        self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         self.transitioningDelegate = self;
         [_contentViewController addObserver:self forKeyPath:PreferredContentSizeKeyPath options:NSKeyValueObservingOptionNew context:nil];
     }
