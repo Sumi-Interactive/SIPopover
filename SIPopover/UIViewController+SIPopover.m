@@ -7,6 +7,7 @@
 
 #import "UIViewController+SIPopover.h"
 #import "SIPopoverRootViewController.h"
+#import "SIPopoverConfiguration.h"
 
 @implementation UIViewController (SIPopover)
 
@@ -38,6 +39,18 @@
     rootViewController.backgroundEffect = backgroundEffect;
     rootViewController.duration = duration;
     rootViewController.tapBackgroundToDissmiss = YES;
+    [self presentViewController:rootViewController animated:YES completion:nil];
+}
+
+- (void)si_presentPopover:(UIViewController *)viewController withConfig:(SIPopoverConfiguration *)config
+{
+    SIPopoverRootViewController *rootViewController = [[SIPopoverRootViewController alloc] initWithContentViewController:viewController];
+    rootViewController.gravity = config.gravity;
+    rootViewController.transitionStyle = config.transitionStyle;
+    rootViewController.backgroundEffect = config.backgroundEffect;
+    rootViewController.duration = config.duration;
+    rootViewController.tapBackgroundToDissmiss = config.tapBackgroundToDissmiss;
+    rootViewController.dismissBlock = config.dismissBlock;
     [self presentViewController:rootViewController animated:YES completion:nil];
 }
 

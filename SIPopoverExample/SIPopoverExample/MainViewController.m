@@ -7,6 +7,7 @@
 //
 
 #import "MainViewController.h"
+#import "ContentViewController.h"
 #import "SIPopover.h"
 
 @interface MainViewController ()
@@ -73,6 +74,16 @@
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+}
+
+- (IBAction)rightBarButtonAction:(id)sender
+{
+    ContentViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ContentViewControllerID"];
+    SIPopoverConfiguration *config = [SIPopoverConfiguration defaultConfig];
+    [config setDismissBlock:^{
+        [vc dismissViewControllerAnimated:YES completion:nil];
+    }];
+    [self si_presentPopover:vc withConfig:config];
 }
 
 @end
