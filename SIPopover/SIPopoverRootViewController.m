@@ -36,7 +36,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
         self.modalPresentationStyle = UIModalPresentationCustom;
         self.transitioningDelegate = self;
         [_contentViewController addObserver:self forKeyPath:PreferredContentSizeKeyPath options:NSKeyValueObservingOptionNew context:nil];
-        _dismissBlock = dismiss;
+        self.dismissBlock = dismiss;
     }
     return self;
 }
