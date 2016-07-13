@@ -26,12 +26,17 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 
 - (id)initWithContentViewController:(UIViewController *)rootViewController
 {
-    self = [super init];
-    if (self) {
+    return [self initWithContentViewController:rootViewController dismiss:nil];
+}
+
+- (instancetype)initWithContentViewController:(UIViewController *)rootViewController dismiss:(SIPopoverDismissBlock)dismiss
+{
+    if (self = [super init]) {
         _contentViewController = rootViewController;
         self.modalPresentationStyle = UIModalPresentationCustom;
         self.transitioningDelegate = self;
         [_contentViewController addObserver:self forKeyPath:PreferredContentSizeKeyPath options:NSKeyValueObservingOptionNew context:nil];
+        _dismissBlock = dismiss;
     }
     return self;
 }
@@ -181,10 +186,14 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 
 - (void)tapBackgroundHandler:(UITapGestureRecognizer *)gesture
 {
-    if (self.tapBackgroundToDissmiss) {
-        CGPoint location = [gesture locationInView:gesture.view];
-        if (!CGRectContainsPoint(self.contentViewController.view.frame, location)) {
-            [self dismissViewControllerAnimated:YES completion:nil];
+    CGPoint location = [gesture locationInView:gesture.view];
+    if (!CGRectContainsPoint(self.contentViewController.view.frame, location)) {
+        if (self.dismissBlock) {
+            self.dismissBlock();
+        } else {
+            if (self.tapBackgroundToDissmiss) {
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }
         }
     }
 }
