@@ -18,28 +18,35 @@
 
 - (void)si_presentPopover:(UIViewController *)viewController
 {
-    [self si_presentPopover:viewController gravity:SIPopoverGravityNone transitionStyle:SIPopoverTransitionStyleSlideFromBottom backgroundEffect:SIPopoverBackgroundEffectDarken duration:0.4];
+    SIPopoverConfiguration *configuration = [SIPopoverConfiguration defaultConfig];
+    [self si_presentPopover:viewController withConfig:configuration];
 }
 
 - (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle
 {
-    [self si_presentPopover:viewController gravity:gravity transitionStyle:transitionStyle backgroundEffect:SIPopoverBackgroundEffectDarken duration:0.4];
+    SIPopoverConfiguration *configuration = [SIPopoverConfiguration defaultConfig];
+    configuration.gravity = gravity;
+    configuration.transitionStyle = transitionStyle;
+    [self si_presentPopover:viewController withConfig:configuration];
 }
 
 - (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect
 {
-    [self si_presentPopover:viewController gravity:gravity transitionStyle:transitionStyle backgroundEffect:backgroundEffect duration:0.4];
+    SIPopoverConfiguration *configuration = [SIPopoverConfiguration defaultConfig];
+    configuration.gravity = gravity;
+    configuration.transitionStyle = transitionStyle;
+    configuration.backgroundEffect = backgroundEffect;
+    [self si_presentPopover:viewController withConfig:configuration];
 }
 
 - (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect duration:(NSTimeInterval)duration
 {
-    SIPopoverRootViewController *rootViewController = [[SIPopoverRootViewController alloc] initWithContentViewController:viewController];
-    rootViewController.gravity = gravity;
-    rootViewController.transitionStyle = transitionStyle;
-    rootViewController.backgroundEffect = backgroundEffect;
-    rootViewController.duration = duration;
-    rootViewController.tapBackgroundToDissmiss = YES;
-    [self presentViewController:rootViewController animated:YES completion:nil];
+    SIPopoverConfiguration *configuration = [SIPopoverConfiguration defaultConfig];
+    configuration.gravity = gravity;
+    configuration.transitionStyle = transitionStyle;
+    configuration.backgroundEffect = backgroundEffect;
+    configuration.duration = duration;
+    [self si_presentPopover:viewController withConfig:configuration];
 }
 
 - (void)si_presentPopover:(UIViewController *)viewController withConfig:(SIPopoverConfiguration *)config
@@ -50,7 +57,7 @@
     rootViewController.backgroundEffect = config.backgroundEffect;
     rootViewController.duration = config.duration;
     rootViewController.tapBackgroundToDissmiss = config.tapBackgroundToDissmiss;
-    rootViewController.dismissBlock = config.dismissBlock;
+    rootViewController.didFinishedHandler = config.didFinishedHandler;
     [self presentViewController:rootViewController animated:YES completion:nil];
 }
 

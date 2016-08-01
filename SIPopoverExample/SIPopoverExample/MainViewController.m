@@ -80,8 +80,8 @@
 {
     ContentViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ContentViewControllerID"];
     SIPopoverConfiguration *config = [SIPopoverConfiguration defaultConfig];
-    [config setDismissBlock:^{
-        [vc dismissViewControllerAnimated:YES completion:nil];
+    [config setDidFinishedHandler:^(UIViewController *viewController) {
+        NSLog(@"did finished popover");
     }];
     [self si_presentPopover:vc withConfig:config];
 }

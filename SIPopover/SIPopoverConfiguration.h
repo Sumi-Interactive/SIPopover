@@ -16,7 +16,7 @@
 @property (nonatomic, assign) SIPopoverBackgroundEffect backgroundEffect;
 @property (nonatomic, assign) NSTimeInterval duration;
 @property (nonatomic, assign) BOOL tapBackgroundToDissmiss;
-@property (nonatomic, copy) void (^dismissBlock)();
+@property (nonatomic, copy) void (^didFinishedHandler)(UIViewController *sender);
 
 + (instancetype)defaultConfig;
 

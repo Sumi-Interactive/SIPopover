@@ -8,21 +8,20 @@
 #import <UIKit/UIKit.h>
 #import "UIViewController+SIPopover.h"
 
-typedef void(^SIPopoverDismissBlock)(void);
+typedef void(^SIPopoverDidFinishedBlock)(UIViewController *viewController);
 
 @interface SIPopoverRootViewController : UIViewController <UINavigationControllerDelegate>
 
 @property (nonatomic, strong, readonly) UIViewController *contentViewController;
 
-- (id)initWithContentViewController:(UIViewController *)contentViewController;
-- (instancetype)initWithContentViewController:(UIViewController *)contentViewController dismiss:(SIPopoverDismissBlock)dismiss;
+- (instancetype)initWithContentViewController:(UIViewController *)contentViewController;
 
 @property (nonatomic, assign) SIPopoverGravity gravity;
 @property (nonatomic, assign) SIPopoverTransitionStyle transitionStyle;
 @property (nonatomic, assign) SIPopoverBackgroundEffect backgroundEffect;
 @property (nonatomic, assign) NSTimeInterval duration;
 @property (nonatomic, assign) BOOL tapBackgroundToDissmiss;
-@property (nonatomic, copy) SIPopoverDismissBlock dismissBlock;
+@property (nonatomic, copy) SIPopoverDidFinishedBlock didFinishedHandler;
 
 - (void)transitionInCompletion:(void(^)(BOOL finished))completion;
 - (void)transitionOutCompletion:(void(^)(BOOL finished))completion;

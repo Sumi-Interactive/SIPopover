@@ -8,6 +8,7 @@
 
 #import "UINavigationController+SIPopover.h"
 #import "SIPopoverRootViewController.h"
+#import "SIPopoverConfiguration.h"
 
 @implementation UINavigationController (SIPopover)
 
@@ -24,6 +25,18 @@
     rootViewController.backgroundEffect = backgroundEffect;
     rootViewController.duration = duration;
     rootViewController.tapBackgroundToDissmiss = YES;
+    self.delegate = rootViewController;
+    [self pushViewController:rootViewController animated:YES];
+}
+
+- (void)si_pushPopover:(UIViewController *)viewController withConfig:(SIPopoverConfiguration *)config {
+    SIPopoverRootViewController *rootViewController = [[SIPopoverRootViewController alloc] initWithContentViewController:viewController];
+    rootViewController.gravity = config.gravity;
+    rootViewController.transitionStyle = config.transitionStyle;
+    rootViewController.backgroundEffect = config.backgroundEffect;
+    rootViewController.duration = config.duration;
+    rootViewController.tapBackgroundToDissmiss = config.tapBackgroundToDissmiss;
+    rootViewController.didFinishedHandler = config.didFinishedHandler;
     self.delegate = rootViewController;
     [self pushViewController:rootViewController animated:YES];
 }

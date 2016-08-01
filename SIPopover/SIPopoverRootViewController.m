@@ -22,21 +22,18 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 - (void)dealloc
 {
     [self.contentViewController removeObserver:self forKeyPath:PreferredContentSizeKeyPath context:nil];
+    if (self.didFinishedHandler) {
+        self.didFinishedHandler(self);
+    }
 }
 
-- (id)initWithContentViewController:(UIViewController *)rootViewController
-{
-    return [self initWithContentViewController:rootViewController dismiss:nil];
-}
-
-- (instancetype)initWithContentViewController:(UIViewController *)rootViewController dismiss:(SIPopoverDismissBlock)dismiss
+- (instancetype)initWithContentViewController:(UIViewController *)rootViewController
 {
     if (self = [super init]) {
         _contentViewController = rootViewController;
         self.modalPresentationStyle = UIModalPresentationCustom;
         self.transitioningDelegate = self;
         [_contentViewController addObserver:self forKeyPath:PreferredContentSizeKeyPath options:NSKeyValueObservingOptionNew context:nil];
-        self.dismissBlock = dismiss;
     }
     return self;
 }
@@ -188,12 +185,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 {
     CGPoint location = [gesture locationInView:gesture.view];
     if (!CGRectContainsPoint(self.contentViewController.view.frame, location)) {
-        if (self.dismissBlock) {
-            self.dismissBlock();
-        } else {
-            if (self.tapBackgroundToDissmiss) {
-                [self dismissViewControllerAnimated:YES completion:nil];
-            }
+        if (self.tapBackgroundToDissmiss) {
+            [self dismissViewControllerAnimated:YES completion:nil];
         }
     }
 }
