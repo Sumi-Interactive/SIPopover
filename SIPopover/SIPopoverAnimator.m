@@ -31,12 +31,15 @@ static NSInteger const kSnapshotViewTag = 999;
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIView *containerView = [transitionContext containerView];
+    UIView *toView = toViewController.view;
+    UIView *fromView = fromViewController.view;
+    UIView *actualToView = [transitionContext viewForKey:UITransitionContextToViewKey];
+    UIView *actualFromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
     
     BOOL isNavigationPop = self.operation == UINavigationControllerOperationPop;
     BOOL isNavigationPush = self.operation == UINavigationControllerOperationPush;
     BOOL isPresentation = isNavigationPush || (self.isPresentation && self.operation == UINavigationControllerOperationNone);
     BOOL notPresentation = isNavigationPop || (!self.isPresentation && self.operation == UINavigationControllerOperationNone);
-    
     
     SIPopoverRootViewController *popoverRootViewController = (SIPopoverRootViewController *)(isPresentation ? toViewController : fromViewController);
     
@@ -44,7 +47,7 @@ static NSInteger const kSnapshotViewTag = 999;
     
     void (^completion)(BOOL finished) = ^(BOOL finished) {
         if (notPresentation) {
-            [fromViewController.view removeFromSuperview];
+            [actualFromView removeFromSuperview];
             
             // Only for navigation controller pop
             if (isNavigationPop) {
@@ -56,23 +59,23 @@ static NSInteger const kSnapshotViewTag = 999;
     
     if (isPresentation) {
         if (isNavigationPush) {
-            UIView *fromViewSnapshot = [fromViewController.view snapshotViewAfterScreenUpdates:YES];
+            UIView *fromViewSnapshot = [fromView snapshotViewAfterScreenUpdates:YES];
             fromViewSnapshot.tag = kSnapshotViewTag;
             [containerView insertSubview:fromViewSnapshot atIndex:0];
         }
-        [containerView addSubview:toViewController.view];
-        toViewController.view.frame = fromViewController.view.frame;
-        [toViewController.view layoutIfNeeded];
+        [containerView addSubview:actualToView];
+        toView.frame = containerView.frame;
+        [toView layoutIfNeeded];
         
         [popoverRootViewController transitionInCompletion:completion];
         
-        toViewController.view.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
-        UIWindow *mainWindow = [UIApplication sharedApplication].windows[0];
+        toView.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
+        UIWindow *mainWindow = [[UIApplication sharedApplication].windows firstObject];
         mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
     } else {
         // Only for navigation controller pop
         if (isNavigationPop) {
-            [containerView insertSubview:toViewController.view atIndex:0];
+            [containerView insertSubview:toView atIndex:0];
             UIView *snapshotView = [containerView viewWithTag:kSnapshotViewTag];
             if (snapshotView) {
                 [snapshotView removeFromSuperview];
@@ -80,7 +83,7 @@ static NSInteger const kSnapshotViewTag = 999;
         }
         [popoverRootViewController transitionOutCompletion:completion];
         
-        UIWindow *mainWindow = [UIApplication sharedApplication].windows[0];
+        UIWindow *mainWindow = [[UIApplication sharedApplication].windows firstObject];
         mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
     }
 }

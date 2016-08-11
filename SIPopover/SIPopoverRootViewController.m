@@ -15,6 +15,9 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 @property (nonatomic, strong) UIView *dimView;
 @property (nonatomic, strong) UIView *containerView;
 
+@property (nonatomic, assign) UIStatusBarStyle savedStyle;
+@property (nonatomic, assign) BOOL savedHidden;
+
 @end
 
 @implementation SIPopoverRootViewController
@@ -31,7 +34,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 {
     if (self = [super init]) {
         _contentViewController = rootViewController;
-        self.modalPresentationStyle = UIModalPresentationCustom;
+        self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         self.transitioningDelegate = self;
         [_contentViewController addObserver:self forKeyPath:PreferredContentSizeKeyPath options:NSKeyValueObservingOptionNew context:nil];
     }
@@ -41,6 +44,9 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.savedStyle = [UIApplication sharedApplication].statusBarStyle;
+    self.savedHidden = [UIApplication sharedApplication].statusBarHidden;
     
     self.dimView = [[UIView alloc] initWithFrame:self.view.bounds];
     self.dimView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -177,6 +183,16 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     [super viewDidDisappear:animated];
     
     [self.contentViewController viewDidDisappear:animated];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return self.savedStyle;
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    return self.savedHidden;
 }
 
 #pragma mark - Gesture
