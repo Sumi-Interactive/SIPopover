@@ -8,6 +8,8 @@
 #import <UIKit/UIKit.h>
 #import "SIPopoverDefine.h"
 
+@class SIPopoverConfiguration;
+
 @interface UIViewController (SIPopover)
 
 - (UIOffset)si_popoverOffset;
@@ -16,5 +18,7 @@
 - (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle;
 - (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect;
 - (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect duration:(NSTimeInterval)duration;
+
+- (void)si_presentPopover:(UIViewController *)viewController withConfig:(SIPopoverConfiguration *)config;
 
 @end

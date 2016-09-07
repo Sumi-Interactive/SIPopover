@@ -10,7 +10,7 @@
 
 static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 
-@interface SIPopoverRootViewController () <UIViewControllerTransitioningDelegate>
+@interface SIPopoverRootViewController () <UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UIView *dimView;
 @property (nonatomic, strong) UIView *containerView;
@@ -25,12 +25,14 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 - (void)dealloc
 {
     [self.contentViewController removeObserver:self forKeyPath:PreferredContentSizeKeyPath context:nil];
+    if (self.didFinishedHandler) {
+        self.didFinishedHandler(self);
+    }
 }
 
-- (id)initWithContentViewController:(UIViewController *)rootViewController
+- (instancetype)initWithContentViewController:(UIViewController *)rootViewController
 {
-    self = [super init];
-    if (self) {
+    if (self = [super init]) {
         _contentViewController = rootViewController;
         self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         self.transitioningDelegate = self;
@@ -48,7 +50,22 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     
     self.dimView = [[UIView alloc] initWithFrame:self.view.bounds];
     self.dimView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.dimView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    switch (self.backgroundEffect) {
+        case SIPopoverBackgroundEffectNone:
+            self.dimView.backgroundColor = [UIColor clearColor];
+            break;
+        case SIPopoverBackgroundEffectDarken:
+            self.dimView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+            break;
+        case SIPopoverBackgroundEffectLighten:
+            self.dimView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
+            break;
+            
+        default:
+            NSLog(@"Warnning: undefine background effect");
+            break;
+    }
+    
     [self.view addSubview:self.dimView];
     
     self.containerView = [[UIView alloc] initWithFrame:self.view.bounds];
@@ -59,11 +76,90 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     [self addChildViewController:self.contentViewController];
     [self.containerView addSubview:self.contentViewController.view];
     [self.contentViewController didMoveToParentViewController:self];
+    
+    [self setupContentView];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapBackgroundHandler:)];
+    tapGesture.delegate = self;
+    [self.containerView addGestureRecognizer:tapGesture];
+}
+
+- (void)setupContentView
+{
+    CGSize size = [self.contentViewController preferredContentSize];
+    
+    UIView *contentView = self.contentViewController.view;
+    
+    contentView.translatesAutoresizingMaskIntoConstraints = NO;
+    NSLayoutConstraint *horizontalCenterConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                                  attribute:NSLayoutAttributeCenterX
+                                                                                  relatedBy:NSLayoutRelationEqual
+                                                                                     toItem:contentView.superview
+                                                                                  attribute:NSLayoutAttributeCenterX
+                                                                                 multiplier:1.0
+                                                                                   constant:0];
+    [contentView.superview addConstraint:horizontalCenterConstraint];
+    
+    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                        attribute:NSLayoutAttributeHeight
+                                                                        relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                           toItem:nil
+                                                                        attribute:0
+                                                                       multiplier:1.0
+                                                                         constant:size.height];
+    [contentView addConstraint:heightConstraint];
+    
+    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                       attribute:NSLayoutAttributeWidth
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:nil
+                                                                       attribute:0
+                                                                      multiplier:1.0
+                                                                        constant:size.width];
+    [contentView addConstraint:widthConstraint];
+    switch (self.gravity) {
+        case SIPopoverGravityNone:{
+            NSLayoutConstraint *verticalCenterConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                                        attribute:NSLayoutAttributeCenterY
+                                                                                        relatedBy:NSLayoutRelationEqual
+                                                                                           toItem:contentView.superview
+                                                                                        attribute:NSLayoutAttributeCenterY
+                                                                                       multiplier:1
+                                                                                         constant:0];
+            
+            [contentView.superview addConstraint:verticalCenterConstraint];
+        }
+            break;
+        case SIPopoverGravityBottom: {
+            NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                                attribute:NSLayoutAttributeBottom
+                                                                                relatedBy:NSLayoutRelationEqual
+                                                                                   toItem:contentView.superview
+                                                                                attribute:NSLayoutAttributeBottom
+                                                                               multiplier:1
+                                                                                 constant:0];
+            
+            [contentView.superview addConstraint:bottomConstraint];
+        }
+            break;
+        case SIPopoverGravityTop: {
+            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:contentView
+                                                                             attribute:NSLayoutAttributeTop
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:contentView.superview
+                                                                             attribute:NSLayoutAttributeTop
+                                                                            multiplier:1
+                                                                              constant:0];
+            
+            [contentView.superview addConstraint:topConstraint];
+        }
+            break;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-	[super viewWillAppear:animated];
+    [super viewWillAppear:animated];
     
     [self.contentViewController viewWillAppear:animated];
 }
@@ -77,7 +173,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-	[super viewWillDisappear:animated];
+    [super viewWillDisappear:animated];
     
     [self.contentViewController viewWillDisappear:animated];
 }
@@ -99,68 +195,54 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     return self.savedHidden;
 }
 
-- (void)viewWillLayoutSubviews
+#pragma mark - Gesture
+
+- (void)tapBackgroundHandler:(UITapGestureRecognizer *)gesture
 {
-    [super viewWillLayoutSubviews];
-    
-    CGFloat width = CGRectGetWidth(self.containerView.bounds);
-    CGFloat height = CGRectGetHeight(self.containerView.bounds);
-    CGSize size = [self.contentViewController preferredContentSize];
-    CGFloat x = (width - size.width) / 2;
-    x += self.contentViewController.si_popoverOffset.horizontal;
-    CGFloat y;
-    switch (self.gravity) {
-        case SIPopoverGravityNone:
-            y = (height - size.height) / 2;
-            y += self.contentViewController.si_popoverOffset.vertical;
-            break;
-        case SIPopoverGravityBottom:
-            y = height - size.height;
-            y -= self.contentViewController.si_popoverOffset.vertical;
-            break;
-        case SIPopoverGravityTop:
-            y = 0;
-            y += self.contentViewController.si_popoverOffset.vertical;
-            break;
+    CGPoint location = [gesture locationInView:gesture.view];
+    if (!CGRectContainsPoint(self.contentViewController.view.frame, location)) {
+        if (self.tapBackgroundToDissmiss) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
     }
-    self.contentViewController.view.frame = CGRectMake(x, y, size.width, size.height);
 }
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    return touch.view == self.containerView;
+}
+
+#pragma mark - Transition
 
 - (void)transitionInCompletion:(void (^)(BOOL finished))completion
 {
     UIView *contentView = self.contentViewController.view;
+    CGFloat containerHeight = CGRectGetHeight(contentView.bounds);
     switch (self.transitionStyle) {
         case SIPopoverTransitionStyleSlideFromTop:
         {
-            CGRect originalFrame = contentView.frame;
-            CGRect rect = contentView.frame;
-            rect.origin.y = -CGRectGetHeight(rect);
-            contentView.frame = rect;
+            contentView.transform = CGAffineTransformMakeTranslation(0, -containerHeight);
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:1
                   initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
-                                 contentView.frame = originalFrame;
+                                 contentView.transform = CGAffineTransformIdentity;
                              }
                              completion:completion];
         }
             break;
         case SIPopoverTransitionStyleSlideFromBottom:
         {
-            CGFloat containerHeight = CGRectGetHeight(self.view.bounds);
-            CGRect originalFrame = contentView.frame;
-            CGRect rect = contentView.frame;
-            rect.origin.y = containerHeight;
-            contentView.frame = rect;
+            contentView.transform = CGAffineTransformMakeTranslation(0, containerHeight);
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:1
                   initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
-                                 contentView.frame = originalFrame;
+                                 contentView.transform = CGAffineTransformIdentity;
                              }
                              completion:completion];
         }
