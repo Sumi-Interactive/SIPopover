@@ -57,7 +57,7 @@
     
     NSAssert([popoverRootViewController isKindOfClass:[SIPopoverRootViewController class]], @"SIPopover internal error.");
     
-    popoverContext.completion = ^(void) {
+    popoverContext.completion = ^{
         BOOL isCancelled = [transitionContext transitionWasCancelled];
         
         if (isShowing) {
@@ -79,16 +79,9 @@
         [toView layoutIfNeeded];
         
         [popoverRootViewController transitionIn:popoverContext];
-        
-//        toView.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
-//        UIWindow *mainWindow = [[UIApplication sharedApplication].windows firstObject];
-//        mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
     } else {
         
         [popoverRootViewController transitionOut:popoverContext];
-        
-//        UIWindow *mainWindow = [[UIApplication sharedApplication].windows firstObject];
-//        mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
     }
 }
 

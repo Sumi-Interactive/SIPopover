@@ -228,6 +228,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
         {
             self.snapshotView = [context.fromView snapshotViewAfterScreenUpdates:YES];
             [self.view insertSubview:self.snapshotView belowSubview:self.overlayView];
+            
             self.view.backgroundColor = UIColor.blackColor;
             self.overlayView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
             self.overlayView.alpha = 0;
@@ -243,6 +244,12 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
                              completion:nil];
         }
             break;
+    }
+    
+    if (self.adjustTintMode) {
+        self.view.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
+        UIWindow *mainWindow = [[UIApplication sharedApplication].windows firstObject];
+        mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
     }
 }
 
@@ -357,6 +364,11 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
                              }];
         }
             break;
+    }
+    
+    if (self.adjustTintMode) {
+        UIWindow *mainWindow = [[UIApplication sharedApplication].windows firstObject];
+        mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
     }
 }
 
