@@ -12,7 +12,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 
 @interface SIPopoverRootViewController () <UIViewControllerTransitioningDelegate>
 
-@property (nonatomic, strong) UIView *dimView;
+@property (nonatomic, strong) UIView *overlayView;
+@property (nonatomic, strong) UIView *snapshotView;
 @property (nonatomic, strong) UIView *containerView;
 
 @property (nonatomic, assign) UIStatusBarStyle savedStyle;
@@ -46,10 +47,10 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     self.savedStyle = [UIApplication sharedApplication].statusBarStyle;
     self.savedHidden = [UIApplication sharedApplication].statusBarHidden;
     
-    self.dimView = [[UIView alloc] initWithFrame:self.view.bounds];
-    self.dimView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.dimView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-    [self.view addSubview:self.dimView];
+    self.overlayView = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.overlayView.alpha = 0;
+    [self.view addSubview:self.overlayView];
     
     self.containerView = [[UIView alloc] initWithFrame:self.view.bounds];
     self.containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -126,101 +127,168 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
     self.contentViewController.view.frame = CGRectMake(x, y, size.width, size.height);
 }
 
-- (void)transitionInCompletion:(void (^)(BOOL finished))completion
+- (void)transitionIn:(SIPopoverContext *)context
 {
     UIView *contentView = self.contentViewController.view;
+    
+    // make content view snapshot
+    UIView *contentSnapshotView = [contentView snapshotViewAfterScreenUpdates:YES];
+    contentSnapshotView.frame = contentView.frame;
+    [self.containerView addSubview:contentSnapshotView];
+    
+    // hide content view
+    contentView.hidden = YES;
+    
+    void (^completion)(BOOL finished) = ^(BOOL finished) {
+        contentView.hidden = NO;
+        [contentSnapshotView removeFromSuperview];
+        context.completion();
+    };
+    
     switch (self.transitionStyle) {
         case SIPopoverTransitionStyleSlideFromTop:
         {
-            CGRect originalFrame = contentView.frame;
-            CGRect rect = contentView.frame;
-            rect.origin.y = -CGRectGetHeight(rect);
-            contentView.frame = rect;
+            CGFloat offset = -(contentSnapshotView.frame.origin.y + CGRectGetHeight(contentSnapshotView.bounds));
+            contentSnapshotView.transform = CGAffineTransformMakeTranslation(0, offset);
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:1
                   initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
-                                 contentView.frame = originalFrame;
+                                 contentSnapshotView.transform = CGAffineTransformIdentity;
                              }
                              completion:completion];
         }
             break;
         case SIPopoverTransitionStyleSlideFromBottom:
         {
-            CGFloat containerHeight = CGRectGetHeight(self.view.bounds);
-            CGRect originalFrame = contentView.frame;
-            CGRect rect = contentView.frame;
-            rect.origin.y = containerHeight;
-            contentView.frame = rect;
+            CGFloat offset = CGRectGetHeight(self.view.bounds) - contentSnapshotView.frame.origin.y;
+            contentSnapshotView.transform = CGAffineTransformMakeTranslation(0, offset);
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:1
                   initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
-                                 contentView.frame = originalFrame;
+                                 contentSnapshotView.transform = CGAffineTransformIdentity;
                              }
                              completion:completion];
         }
             break;
         case SIPopoverTransitionStyleBounce:
         {
-            contentView.transform = CGAffineTransformMakeScale(0.8, 0.8);
-            contentView.alpha = 0;
+            contentSnapshotView.transform = CGAffineTransformMakeScale(0.8, 0.8);
+            contentSnapshotView.alpha = 0;
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:0.5
                   initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations:^{
-                                 contentView.transform = CGAffineTransformIdentity;
-                                 contentView.alpha = 1;
+                                 contentSnapshotView.transform = CGAffineTransformIdentity;
+                                 contentSnapshotView.alpha = 1;
                              }
                              completion:completion];
         }
             break;
     }
     
-    self.dimView.alpha = 0;
-    [UIView animateWithDuration:self.duration
-                     animations:^{
-                         self.dimView.alpha = 1;
-                     }];
+    switch (self.backgroundEffect) {
+        case SIPopoverBackgroundEffectNone:
+            break;
+        case SIPopoverBackgroundEffectDarken:
+        {
+            self.view.backgroundColor = UIColor.clearColor;
+            self.overlayView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+            self.overlayView.alpha = 0;
+            [UIView animateWithDuration:self.duration
+                             animations:^{
+                                 self.overlayView.alpha = 1;
+                             }];
+        }
+            break;
+        case SIPopoverBackgroundEffectLighten:
+        {
+            self.view.backgroundColor = UIColor.clearColor;
+            self.overlayView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
+            self.overlayView.alpha = 0;
+            [UIView animateWithDuration:self.duration
+                             animations:^{
+                                 self.overlayView.alpha = 1;
+                             }];
+        }
+            break;
+        case SIPopoverBackgroundEffectBlur:
+        {
+            // TODO:
+        }
+            break;
+        case SIPopoverBackgroundEffectPushBack:
+        {
+            self.snapshotView = [context.fromView snapshotViewAfterScreenUpdates:YES];
+            [self.view insertSubview:self.snapshotView belowSubview:self.overlayView];
+            self.view.backgroundColor = UIColor.blackColor;
+            self.overlayView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+            self.overlayView.alpha = 0;
+            [UIView animateWithDuration:self.duration
+                                  delay:0
+                 usingSpringWithDamping:1
+                  initialSpringVelocity:0
+                                options:UIViewAnimationOptionCurveEaseOut
+                             animations:^{
+                                 self.snapshotView.transform = CGAffineTransformMakeScale(0.92, 0.92);
+                                 self.overlayView.alpha = 1;
+                             }
+                             completion:nil];
+        }
+            break;
+    }
 }
 
-- (void)transitionOutCompletion:(void (^)(BOOL finished))completion
+- (void)transitionOut:(SIPopoverContext *)context
 {
     UIView *contentView = self.contentViewController.view;
+    
+    // make content view snapshot
+    UIView *contentSnapshotView = [contentView snapshotViewAfterScreenUpdates:YES];
+    contentSnapshotView.frame = contentView.frame;
+    [self.containerView addSubview:contentSnapshotView];
+    
+    // hide content view
+    contentView.hidden = YES;
+    
+    void (^completion)(BOOL finished) = ^(BOOL finished) {
+        contentView.hidden = NO;
+        [contentSnapshotView removeFromSuperview];
+        context.completion();
+    };
+    
     switch (self.transitionStyle) {
         case SIPopoverTransitionStyleSlideFromTop:
         {
+            CGFloat offset = -(contentSnapshotView.frame.origin.y + CGRectGetHeight(contentSnapshotView.bounds));
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:1
                   initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
-                                 CGRect rect = contentView.frame;
-                                 rect.origin.y = -CGRectGetHeight(rect);
-                                 contentView.frame = rect;
+                                 contentSnapshotView.transform = CGAffineTransformMakeTranslation(0, offset);
                              }
                              completion:completion];
         }
             break;
         case SIPopoverTransitionStyleSlideFromBottom:
         {
-            CGFloat containerHeight = CGRectGetHeight(self.view.bounds);
+            CGFloat offset = CGRectGetHeight(self.view.bounds) - contentSnapshotView.frame.origin.y;
             [UIView animateWithDuration:self.duration
                                   delay:0
                  usingSpringWithDamping:1
                   initialSpringVelocity:0
                                 options:UIViewAnimationOptionCurveEaseIn
                              animations:^{
-                                 CGRect rect = contentView.frame;
-                                 rect.origin.y = containerHeight;
-                                 contentView.frame = rect;
+                                 contentSnapshotView.transform = CGAffineTransformMakeTranslation(0, offset);
                              }
                              completion:completion];
         }
@@ -234,23 +302,62 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
                                           [UIView addKeyframeWithRelativeStartTime:0
                                                                   relativeDuration:0.2
                                                                         animations:^{
-                                                                            contentView.transform = CGAffineTransformMakeScale(1.1, 1.1);
+                                                                            contentSnapshotView.transform = CGAffineTransformMakeScale(1.1, 1.1);
                                                                         }];
                                           [UIView addKeyframeWithRelativeStartTime:0.2
                                                                   relativeDuration:0.8
                                                                         animations:^{
-                                                                            contentView.transform = CGAffineTransformMakeScale(0.8, 0.8);
-                                                                            contentView.alpha = 0;
+                                                                            contentSnapshotView.transform = CGAffineTransformMakeScale(0.8, 0.8);
+                                                                            contentSnapshotView.alpha = 0;
                                                                         }];
                                       }
                                       completion:completion];
         }
             break;
     }
-    [UIView animateWithDuration:self.duration
-                     animations:^{
-                         self.dimView.alpha = 0;
-                     }];
+    
+    switch (self.backgroundEffect) {
+        case SIPopoverBackgroundEffectNone:
+            break;
+        case SIPopoverBackgroundEffectDarken:
+        {
+            [UIView animateWithDuration:self.duration
+                             animations:^{
+                                 self.overlayView.alpha = 0;
+                             }];
+        }
+            break;
+        case SIPopoverBackgroundEffectLighten:
+        {
+            [UIView animateWithDuration:self.duration
+                             animations:^{
+                                 self.overlayView.alpha = 0;
+                             }];
+        }
+            break;
+        case SIPopoverBackgroundEffectBlur:
+        {
+            // TODO:
+        }
+            break;
+        case SIPopoverBackgroundEffectPushBack:
+        {
+            [UIView animateWithDuration:self.duration
+                                  delay:0
+                 usingSpringWithDamping:1
+                  initialSpringVelocity:0
+                                options:UIViewAnimationOptionCurveEaseOut
+                             animations:^{
+                                 self.snapshotView.transform = CGAffineTransformIdentity;
+                                 self.overlayView.alpha = 0;
+                             }
+                             completion:^(BOOL finished) {
+                                 [self.snapshotView removeFromSuperview];
+                                 self.snapshotView = nil;
+                             }];
+        }
+            break;
+    }
 }
 
 
@@ -259,21 +366,12 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:PreferredContentSizeKeyPath]) {
-        [self.view setNeedsLayout];
+        [UIView animateWithDuration:0.2
+                         animations:^{
+                             [self.view setNeedsLayout];
+                             [self.view layoutIfNeeded];
+                         }];
     }
-}
-
-#pragma mark - UINavigationControllerDelegate
-
-- (id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
-                                   animationControllerForOperation:(UINavigationControllerOperation)operation
-                                                fromViewController:(UIViewController *)fromVC
-                                                  toViewController:(UIViewController *)toVC
-{
-    SIPopoverAnimator *animator = [[SIPopoverAnimator alloc] init];
-    animator.operation = operation;
-    animator.duration = self.duration;
-    return animator;
 }
 
 #pragma mark - UIViewControllerTransitioningDelegate

@@ -7,8 +7,7 @@
 
 #import "SIPopoverAnimator.h"
 #import "SIPopoverRootViewController.h"
-
-static NSInteger const kSnapshotViewTag = 999;
+#import "SIPopoverContext.h"
 
 @implementation SIPopoverAnimator
 
@@ -28,63 +27,68 @@ static NSInteger const kSnapshotViewTag = 999;
 
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
 {
+    SIPopoverContext *popoverContext = [[SIPopoverContext alloc] init];
+    
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    popoverContext.toViewController = toViewController;
+    
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    popoverContext.fromViewController = fromViewController;
+    
     UIView *containerView = [transitionContext containerView];
+    popoverContext.containerView = containerView;
+    
     UIView *toView = toViewController.view;
+    popoverContext.toView = toView;
+    
     UIView *fromView = fromViewController.view;
+    popoverContext.fromView = fromView;
+    
     UIView *actualToView = [transitionContext viewForKey:UITransitionContextToViewKey];
+    popoverContext.actualToView = actualToView;
+    
     UIView *actualFromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
+    popoverContext.actualFromView = actualFromView;
     
-    BOOL isNavigationPop = self.operation == UINavigationControllerOperationPop;
-    BOOL isNavigationPush = self.operation == UINavigationControllerOperationPush;
-    BOOL isPresentation = isNavigationPush || (self.isPresentation && self.operation == UINavigationControllerOperationNone);
-    BOOL notPresentation = isNavigationPop || (!self.isPresentation && self.operation == UINavigationControllerOperationNone);
+    BOOL isShowing = self.isPresentation;
+    popoverContext.isShowing = isShowing;
     
-    SIPopoverRootViewController *popoverRootViewController = (SIPopoverRootViewController *)(isPresentation ? toViewController : fromViewController);
+    SIPopoverRootViewController *popoverRootViewController = (SIPopoverRootViewController *)(isShowing ? toViewController : fromViewController);
     
     NSAssert([popoverRootViewController isKindOfClass:[SIPopoverRootViewController class]], @"SIPopover internal error.");
     
-    void (^completion)(BOOL finished) = ^(BOOL finished) {
-        if (notPresentation) {
-            [actualFromView removeFromSuperview];
-            
-            // Only for navigation controller pop
-            if (isNavigationPop) {
-                toViewController.navigationController.delegate = nil;
+    popoverContext.completion = ^(void) {
+        BOOL isCancelled = [transitionContext transitionWasCancelled];
+        
+        if (isShowing) {
+            if (isCancelled) {
+                [actualToView removeFromSuperview];
+            }
+        } else {
+            if (!isCancelled) {
+                [actualFromView removeFromSuperview];
             }
         }
-        [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+        
+        [transitionContext completeTransition:!isCancelled];
     };
     
-    if (isPresentation) {
-        if (isNavigationPush) {
-            UIView *fromViewSnapshot = [fromView snapshotViewAfterScreenUpdates:YES];
-            fromViewSnapshot.tag = kSnapshotViewTag;
-            [containerView insertSubview:fromViewSnapshot atIndex:0];
-        }
+    if (isShowing) {
         [containerView addSubview:actualToView];
         toView.frame = containerView.frame;
         [toView layoutIfNeeded];
         
-        [popoverRootViewController transitionInCompletion:completion];
+        [popoverRootViewController transitionIn:popoverContext];
         
-        toView.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
-        UIWindow *mainWindow = [[UIApplication sharedApplication].windows firstObject];
-        mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
+//        toView.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
+//        UIWindow *mainWindow = [[UIApplication sharedApplication].windows firstObject];
+//        mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
     } else {
-        // Only for navigation controller pop
-        if (isNavigationPop) {
-            [containerView insertSubview:toView atIndex:0];
-            UIView *snapshotView = [containerView viewWithTag:kSnapshotViewTag];
-            if (snapshotView) {
-                [snapshotView removeFromSuperview];
-            }
-        }
-        [popoverRootViewController transitionOutCompletion:completion];
         
-        UIWindow *mainWindow = [[UIApplication sharedApplication].windows firstObject];
-        mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
+        [popoverRootViewController transitionOut:popoverContext];
+        
+//        UIWindow *mainWindow = [[UIApplication sharedApplication].windows firstObject];
+//        mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
     }
 }
 

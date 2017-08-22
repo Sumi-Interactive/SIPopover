@@ -11,6 +11,5 @@
 
 @property (nonatomic, assign) NSTimeInterval duration;
 @property (nonatomic, assign, getter = isPresentation) BOOL presentation;
-@property (nonatomic, assign) UINavigationControllerOperation operation;
 
 @end

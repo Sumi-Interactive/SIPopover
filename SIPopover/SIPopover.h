@@ -9,8 +9,6 @@
 #define GridDiary_SIPopover_h
 
 #import "SIPopoverSegue.h"
-#import "SINavigationPopoverSegue.h"
 #import "UIViewController+SIPopover.h"
-#import "UINavigationController+SIPopover.h"
 
 #endif

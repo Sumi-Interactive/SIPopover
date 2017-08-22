@@ -9,20 +9,20 @@
 typedef NS_ENUM(NSUInteger, SIPopoverTransitionStyle) {
     SIPopoverTransitionStyleSlideFromBottom = 0,
     SIPopoverTransitionStyleSlideFromTop,
-    SIPopoverTransitionStyleBounce,
+    SIPopoverTransitionStyleBounce
 };
 
 typedef NS_ENUM(NSInteger, SIPopoverBackgroundEffect) {
     SIPopoverBackgroundEffectNone = 0,
-    SIPopoverBackgroundEffectDarken = 1 << 0,
-    SIPopoverBackgroundEffectLighten = 1 << 1,
-    SIPopoverBackgroundEffectBlur = 1 << 2,
-    SIPopoverBackgroundEffectPushBack = 1 << 3,
+    SIPopoverBackgroundEffectDarken,
+    SIPopoverBackgroundEffectLighten,
+    SIPopoverBackgroundEffectBlur,
+    SIPopoverBackgroundEffectPushBack
 };
 
 typedef NS_ENUM(NSInteger, SIPopoverGravity) {
     SIPopoverGravityNone = 0,
     SIPopoverGravityBottom,
-    SIPopoverGravityTop,
+    SIPopoverGravityTop
 };
 

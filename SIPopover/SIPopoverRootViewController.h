@@ -7,6 +7,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UIViewController+SIPopover.h"
+#import "SIPopoverContext.h"
 
 @interface SIPopoverRootViewController : UIViewController <UINavigationControllerDelegate>
 
@@ -16,10 +17,10 @@
 
 @property (nonatomic, assign) SIPopoverGravity gravity;
 @property (nonatomic, assign) SIPopoverTransitionStyle transitionStyle;
-@property (nonatomic, assign) SIPopoverBackgroundEffect backgroundEffect; // TODO: not yet implemented
+@property (nonatomic, assign) SIPopoverBackgroundEffect backgroundEffect;
 @property (nonatomic, assign) NSTimeInterval duration;
 
-- (void)transitionInCompletion:(void(^)(BOOL finished))completion;
-- (void)transitionOutCompletion:(void(^)(BOOL finished))completion;
+- (void)transitionIn:(SIPopoverContext *)context;
+- (void)transitionOut:(SIPopoverContext *)context;
 
 @end

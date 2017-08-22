@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5FEC5509192DA47500232A9A /* UINavigationController+SIPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FEC5508192DA47500232A9A /* UINavigationController+SIPopover.m */; };
-		5FEC5512192DAA4E00232A9A /* SINavigationPopoverSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 5FEC5511192DAA4E00232A9A /* SINavigationPopoverSegue.m */; };
 		7E391AA118B32F290007A3DC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E391AA018B32F290007A3DC /* Foundation.framework */; };
 		7E391AA318B32F290007A3DC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E391AA218B32F290007A3DC /* CoreGraphics.framework */; };
 		7E391AA518B32F290007A3DC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E391AA418B32F290007A3DC /* UIKit.framework */; };
@@ -34,6 +32,8 @@
 		7E391AFE18B344DC0007A3DC /* SIPopoverSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E391AF618B344DC0007A3DC /* SIPopoverSegue.m */; };
 		7E391AFF18B344DC0007A3DC /* UIViewController+SIPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E391AF818B344DC0007A3DC /* UIViewController+SIPopover.m */; };
 		7E391B0018B344DC0007A3DC /* UIViewController+SIPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E391AF818B344DC0007A3DC /* UIViewController+SIPopover.m */; };
+		7E4FA24B1F4BCD2E003402BD /* SIPopoverContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4FA24A1F4BCD2E003402BD /* SIPopoverContext.m */; };
+		7E4FA24D1F4C0507003402BD /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E4FA24C1F4C0507003402BD /* Launch Screen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,11 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		5FEC5507192DA47500232A9A /* UINavigationController+SIPopover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+SIPopover.h"; sourceTree = "<group>"; };
-		5FEC5508192DA47500232A9A /* UINavigationController+SIPopover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+SIPopover.m"; sourceTree = "<group>"; };
 		5FEC550A192DA4FA00232A9A /* SIPopoverDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIPopoverDefine.h; sourceTree = "<group>"; };
-		5FEC5510192DAA4E00232A9A /* SINavigationPopoverSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SINavigationPopoverSegue.h; sourceTree = "<group>"; };
-		5FEC5511192DAA4E00232A9A /* SINavigationPopoverSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SINavigationPopoverSegue.m; sourceTree = "<group>"; };
 		7E391A9D18B32F290007A3DC /* SIPopoverExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SIPopoverExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E391AA018B32F290007A3DC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7E391AA218B32F290007A3DC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -82,6 +78,9 @@
 		7E391AF618B344DC0007A3DC /* SIPopoverSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIPopoverSegue.m; sourceTree = "<group>"; };
 		7E391AF718B344DC0007A3DC /* UIViewController+SIPopover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SIPopover.h"; sourceTree = "<group>"; };
 		7E391AF818B344DC0007A3DC /* UIViewController+SIPopover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SIPopover.m"; sourceTree = "<group>"; };
+		7E4FA2491F4BCD2E003402BD /* SIPopoverContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIPopoverContext.h; sourceTree = "<group>"; };
+		7E4FA24A1F4BCD2E003402BD /* SIPopoverContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIPopoverContext.m; sourceTree = "<group>"; };
+		7E4FA24C1F4C0507003402BD /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +144,7 @@
 				7E391AAF18B32F290007A3DC /* AppDelegate.h */,
 				7E391AB018B32F290007A3DC /* AppDelegate.m */,
 				7E391AB218B32F290007A3DC /* Main.storyboard */,
+				7E4FA24C1F4C0507003402BD /* Launch Screen.storyboard */,
 				7E391AE718B332220007A3DC /* MainViewController.h */,
 				7E391AE818B332220007A3DC /* MainViewController.m */,
 				7E391AEB18B333530007A3DC /* ContentViewController.h */,
@@ -191,16 +191,14 @@
 				5FEC550A192DA4FA00232A9A /* SIPopoverDefine.h */,
 				7E391AF118B344DC0007A3DC /* SIPopoverAnimator.h */,
 				7E391AF218B344DC0007A3DC /* SIPopoverAnimator.m */,
+				7E4FA2491F4BCD2E003402BD /* SIPopoverContext.h */,
+				7E4FA24A1F4BCD2E003402BD /* SIPopoverContext.m */,
 				7E391AF318B344DC0007A3DC /* SIPopoverRootViewController.h */,
 				7E391AF418B344DC0007A3DC /* SIPopoverRootViewController.m */,
 				7E391AF518B344DC0007A3DC /* SIPopoverSegue.h */,
 				7E391AF618B344DC0007A3DC /* SIPopoverSegue.m */,
-				5FEC5510192DAA4E00232A9A /* SINavigationPopoverSegue.h */,
-				5FEC5511192DAA4E00232A9A /* SINavigationPopoverSegue.m */,
 				7E391AF718B344DC0007A3DC /* UIViewController+SIPopover.h */,
 				7E391AF818B344DC0007A3DC /* UIViewController+SIPopover.m */,
-				5FEC5507192DA47500232A9A /* UINavigationController+SIPopover.h */,
-				5FEC5508192DA47500232A9A /* UINavigationController+SIPopover.m */,
 			);
 			name = SIPopover;
 			path = ../SIPopover;
@@ -253,6 +251,9 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Sumi Interactive";
 				TargetAttributes = {
+					7E391A9C18B32F290007A3DC = {
+						DevelopmentTeam = VWD67942DL;
+					};
 					7E391ABD18B32F290007A3DC = {
 						TestTargetID = 7E391A9C18B32F290007A3DC;
 					};
@@ -284,6 +285,7 @@
 			files = (
 				7E391AB918B32F290007A3DC /* Images.xcassets in Resources */,
 				7E391AAB18B32F290007A3DC /* InfoPlist.strings in Resources */,
+				7E4FA24D1F4C0507003402BD /* Launch Screen.storyboard in Resources */,
 				7E391AB418B32F290007A3DC /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -306,10 +308,9 @@
 				7E391AB118B32F290007A3DC /* AppDelegate.m in Sources */,
 				7E391AE918B332220007A3DC /* MainViewController.m in Sources */,
 				7E391AED18B333530007A3DC /* ContentViewController.m in Sources */,
-				5FEC5512192DAA4E00232A9A /* SINavigationPopoverSegue.m in Sources */,
-				5FEC5509192DA47500232A9A /* UINavigationController+SIPopover.m in Sources */,
 				7E391AAD18B32F290007A3DC /* main.m in Sources */,
 				7E391AFB18B344DC0007A3DC /* SIPopoverRootViewController.m in Sources */,
+				7E4FA24B1F4BCD2E003402BD /* SIPopoverContext.m in Sources */,
 				7E391AF918B344DC0007A3DC /* SIPopoverAnimator.m in Sources */,
 				7E391AFF18B344DC0007A3DC /* UIViewController+SIPopover.m in Sources */,
 				7E391AFD18B344DC0007A3DC /* SIPopoverSegue.m in Sources */,
@@ -401,7 +402,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -433,7 +434,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -443,12 +444,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEVELOPMENT_TEAM = VWD67942DL;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SIPopoverExample/SIPopoverExample-Prefix.pch";
 				INFOPLIST_FILE = "SIPopoverExample/SIPopoverExample-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sumi-sumi.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -457,12 +459,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEVELOPMENT_TEAM = VWD67942DL;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SIPopoverExample/SIPopoverExample-Prefix.pch";
 				INFOPLIST_FILE = "SIPopoverExample/SIPopoverExample-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sumi-sumi.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
