@@ -34,6 +34,7 @@
 		7E391B0018B344DC0007A3DC /* UIViewController+SIPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E391AF818B344DC0007A3DC /* UIViewController+SIPopover.m */; };
 		7E4FA24B1F4BCD2E003402BD /* SIPopoverContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4FA24A1F4BCD2E003402BD /* SIPopoverContext.m */; };
 		7E4FA24D1F4C0507003402BD /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E4FA24C1F4C0507003402BD /* Launch Screen.storyboard */; };
+		7E4FA2531F4CA6B0003402BD /* SIPopoverInteractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4FA2521F4CA6B0003402BD /* SIPopoverInteractor.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,8 @@
 		7E4FA2491F4BCD2E003402BD /* SIPopoverContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIPopoverContext.h; sourceTree = "<group>"; };
 		7E4FA24A1F4BCD2E003402BD /* SIPopoverContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIPopoverContext.m; sourceTree = "<group>"; };
 		7E4FA24C1F4C0507003402BD /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		7E4FA2511F4CA6B0003402BD /* SIPopoverInteractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIPopoverInteractor.h; sourceTree = "<group>"; };
+		7E4FA2521F4CA6B0003402BD /* SIPopoverInteractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIPopoverInteractor.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,6 +198,8 @@
 				7E4FA24A1F4BCD2E003402BD /* SIPopoverContext.m */,
 				7E391AF318B344DC0007A3DC /* SIPopoverRootViewController.h */,
 				7E391AF418B344DC0007A3DC /* SIPopoverRootViewController.m */,
+				7E4FA2511F4CA6B0003402BD /* SIPopoverInteractor.h */,
+				7E4FA2521F4CA6B0003402BD /* SIPopoverInteractor.m */,
 				7E391AF518B344DC0007A3DC /* SIPopoverSegue.h */,
 				7E391AF618B344DC0007A3DC /* SIPopoverSegue.m */,
 				7E391AF718B344DC0007A3DC /* UIViewController+SIPopover.h */,
@@ -311,6 +316,7 @@
 				7E391AAD18B32F290007A3DC /* main.m in Sources */,
 				7E391AFB18B344DC0007A3DC /* SIPopoverRootViewController.m in Sources */,
 				7E4FA24B1F4BCD2E003402BD /* SIPopoverContext.m in Sources */,
+				7E4FA2531F4CA6B0003402BD /* SIPopoverInteractor.m in Sources */,
 				7E391AF918B344DC0007A3DC /* SIPopoverAnimator.m in Sources */,
 				7E391AFF18B344DC0007A3DC /* UIViewController+SIPopover.m in Sources */,
 				7E391AFD18B344DC0007A3DC /* SIPopoverSegue.m in Sources */,

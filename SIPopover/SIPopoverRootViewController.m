@@ -16,6 +16,8 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 @property (nonatomic, strong) UIView *snapshotView;
 @property (nonatomic, strong) UIView *containerView;
 
+@property (nonatomic, strong) SIPopoverInteractor *interactor;
+
 @property (nonatomic, assign) UIStatusBarStyle savedStyle;
 @property (nonatomic, assign) BOOL savedHidden;
 
@@ -36,6 +38,7 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
         self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         self.transitioningDelegate = self;
         [_contentViewController addObserver:self forKeyPath:PreferredContentSizeKeyPath options:NSKeyValueObservingOptionNew context:nil];
+        self.interactor = [[SIPopoverInteractor alloc] init];
     }
     return self;
 }
@@ -359,8 +362,10 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
                                  self.overlayView.alpha = 0;
                              }
                              completion:^(BOOL finished) {
-                                 [self.snapshotView removeFromSuperview];
-                                 self.snapshotView = nil;
+                                 if (!context.transitionContext.transitionWasCancelled) {
+                                     [self.snapshotView removeFromSuperview];
+                                     self.snapshotView = nil;
+                                 }
                              }];
         }
             break;
@@ -396,6 +401,11 @@ static NSString * const PreferredContentSizeKeyPath = @"preferredContentSize";
 - (id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
 {
     return [self animatorWithPresentation:NO];
+}
+
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator
+{
+    return self.interactor.isInteracting ? self.interactor : nil;
 }
 
 - (SIPopoverAnimator *)animatorWithPresentation:(BOOL)presentation

@@ -28,6 +28,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     switch (indexPath.section) {
         case 0:
             return;
@@ -62,12 +63,6 @@
         popover.transitionStyle = [self.params[@"transitionStyle"] integerValue];
         popover.backgroundEffect = [self.params[@"backgroundEffect"] integerValue];
     }
-}
-
-- (IBAction)dismissAction:(UIStoryboardSegue *)segue
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 
 @end

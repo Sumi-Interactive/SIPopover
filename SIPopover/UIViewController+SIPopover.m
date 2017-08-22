@@ -10,6 +10,19 @@
 
 @implementation UIViewController (SIPopover)
 
+- (SIPopoverRootViewController *)si_popoverController
+{
+    if ([self.parentViewController isKindOfClass:[SIPopoverRootViewController class]]) {
+        return (SIPopoverRootViewController *)self.parentViewController;
+    }
+    return nil;
+}
+
+- (SIPopoverInteractor *)si_popoverInteractor
+{
+    return [self si_popoverController].interactor;
+}
+
 - (UIOffset)si_popoverOffset
 {
     return UIOffsetZero;

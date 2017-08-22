@@ -271,7 +271,7 @@
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <segue destination="MTJ-dS-0mX" kind="unwind" unwindAction="dismissAction:" id="2A5-lt-hF2"/>
+                                    <action selector="dismissAction:" destination="ntx-hP-okT" eventType="touchUpInside" id="AvZ-iJ-Ne8"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -287,7 +287,6 @@
                     <size key="freeformSize" width="300" height="300"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="veU-iu-wCr" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="MTJ-dS-0mX" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1148" y="341"/>
         </scene>

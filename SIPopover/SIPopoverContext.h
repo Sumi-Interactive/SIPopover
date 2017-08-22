@@ -16,6 +16,7 @@
 @property (nonatomic, weak) UIView *fromView;
 @property (nonatomic, weak) UIView *actualToView;
 @property (nonatomic, weak) UIView *actualFromView;
+@property (nonatomic, weak) id <UIViewControllerContextTransitioning> transitionContext;
 @property (nonatomic, assign) BOOL isShowing;
 @property (nonatomic, copy) void (^completion)(void);
 

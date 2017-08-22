@@ -29,6 +29,8 @@
 {
     SIPopoverContext *popoverContext = [[SIPopoverContext alloc] init];
     
+    popoverContext.transitionContext = transitionContext;
+    
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     popoverContext.toViewController = toViewController;
     
@@ -70,6 +72,11 @@
             }
         }
         
+        if (isCancelled) {
+            [transitionContext cancelInteractiveTransition];
+        } else {
+            [transitionContext finishInteractiveTransition];
+        }
         [transitionContext completeTransition:!isCancelled];
     };
     

@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 #import "UIViewController+SIPopover.h"
 #import "SIPopoverContext.h"
+#import "SIPopoverInteractor.h"
 
 @interface SIPopoverRootViewController : UIViewController <UINavigationControllerDelegate>
 
@@ -20,6 +21,7 @@
 @property (nonatomic, assign) SIPopoverBackgroundEffect backgroundEffect;
 @property (nonatomic, assign) NSTimeInterval duration;
 @property (nonatomic, assign) BOOL adjustTintMode; // default is NO
+@property (nonatomic, readonly, strong) SIPopoverInteractor *interactor;
 
 - (void)transitionIn:(SIPopoverContext *)context;
 - (void)transitionOut:(SIPopoverContext *)context;
