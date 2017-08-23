@@ -6,22 +6,9 @@
 //
 
 #import "UIViewController+SIPopover.h"
-#import "SIPopoverRootViewController.h"
+#import "SIPopoverPresentationController.h"
 
 @implementation UIViewController (SIPopover)
-
-- (SIPopoverRootViewController *)si_popoverController
-{
-    if ([self.parentViewController isKindOfClass:[SIPopoverRootViewController class]]) {
-        return (SIPopoverRootViewController *)self.parentViewController;
-    }
-    return nil;
-}
-
-- (SIPopoverInteractor *)si_popoverInteractor
-{
-    return [self si_popoverController].interactor;
-}
 
 - (UIOffset)si_popoverOffset
 {
@@ -45,12 +32,15 @@
 
 - (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle backgroundEffect:(SIPopoverBackgroundEffect)backgroundEffect duration:(NSTimeInterval)duration
 {
-    SIPopoverRootViewController *rootViewController = [[SIPopoverRootViewController alloc] initWithContentViewController:viewController];
-    rootViewController.gravity = gravity;
-    rootViewController.transitionStyle = transitionStyle;
-    rootViewController.backgroundEffect = backgroundEffect;
-    rootViewController.duration = duration;
-	[self presentViewController:rootViewController animated:YES completion:nil];
+    SIPopoverPresentationController *presentationController NS_VALID_UNTIL_END_OF_SCOPE;
+    presentationController = [[SIPopoverPresentationController alloc] initWithPresentedViewController:viewController presentingViewController:self];
+    viewController.transitioningDelegate = presentationController;
+    presentationController.gravity = gravity;
+    presentationController.transitionStyle = transitionStyle;
+    presentationController.backgroundEffect = backgroundEffect;
+    presentationController.duration = duration;
+    
+    [self presentViewController:viewController animated:YES completion:nil];
 }
 
 @end

@@ -9,12 +9,7 @@
 #import "SIPopoverDefine.h"
 #import "SIPopoverInteractor.h"
 
-@class SIPopoverRootViewController;
-
 @interface UIViewController (SIPopover)
-
-- (SIPopoverRootViewController *)si_popoverController;
-- (SIPopoverInteractor *)si_popoverInteractor;
 
 - (UIOffset)si_popoverOffset;
 

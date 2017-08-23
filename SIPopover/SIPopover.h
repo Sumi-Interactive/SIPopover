@@ -10,5 +10,6 @@
 
 #import "SIPopoverSegue.h"
 #import "UIViewController+SIPopover.h"
+#import "SIPopoverPresentationController.h"
 
 #endif
