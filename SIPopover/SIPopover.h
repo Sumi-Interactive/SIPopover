@@ -11,5 +11,7 @@
 #import "SIPopoverSegue.h"
 #import "UIViewController+SIPopover.h"
 #import "SIPopoverPresentationController.h"
+#import "SIPopoverInteractor.h"
+#import "SIPanInteractor.h"
 
 #endif

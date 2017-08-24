@@ -15,8 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController (SIPopover)
 
-- (UIOffset)si_popoverOffset;
-- (nullable SIPopoverPresentationController *)si_popoverTransitionController;
+@property (nonatomic, assign, readonly) UIOffset si_popoverOffset;
+@property (nonatomic, strong, readonly, nullable) SIPopoverPresentationController *si_popoverTransitionController;
 
 - (void)si_presentPopover:(UIViewController *)viewController;
 - (void)si_presentPopover:(UIViewController *)viewController gravity:(SIPopoverGravity)gravity transitionStyle:(SIPopoverTransitionStyle)transitionStyle;
