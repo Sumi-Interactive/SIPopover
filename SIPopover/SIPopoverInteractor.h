@@ -10,9 +10,6 @@
 @interface SIPopoverInteractor : UIPercentDrivenInteractiveTransition
 
 @property (nonatomic, assign) BOOL isInteracting;
-
-- (instancetype)initWithGestureRecognizer:(UIPanGestureRecognizer *)gestureRecognizer NS_DESIGNATED_INITIALIZER;
-
-- (instancetype)init NS_UNAVAILABLE;
+@property (nonatomic, weak, readonly) id<UIViewControllerContextTransitioning> transitionContext;
 
 @end

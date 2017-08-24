@@ -263,10 +263,18 @@
     return self;
 }
 
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator
+{
+    if (self.presentationInteractor.isInteracting) {
+        return self.presentationInteractor;
+    }
+    return nil;
+}
+
 - (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator
 {
-    if (self.gestureRecognizer) {
-        return [[SIPopoverInteractor alloc] initWithGestureRecognizer:self.gestureRecognizer];
+    if (self.dismissalInteractor.isInteracting) {
+        return self.dismissalInteractor;
     }
     return nil;
 }

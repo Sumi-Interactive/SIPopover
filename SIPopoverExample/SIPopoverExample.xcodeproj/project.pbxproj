@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7E0D4C331F4D7E15001A103A /* SIPopoverPresentationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0D4C321F4D7E15001A103A /* SIPopoverPresentationController.m */; };
+		7E0D4C361F4EC5E5001A103A /* SIPanInteractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0D4C351F4EC5E5001A103A /* SIPanInteractor.m */; };
 		7E391AA118B32F290007A3DC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E391AA018B32F290007A3DC /* Foundation.framework */; };
 		7E391AA318B32F290007A3DC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E391AA218B32F290007A3DC /* CoreGraphics.framework */; };
 		7E391AA518B32F290007A3DC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E391AA418B32F290007A3DC /* UIKit.framework */; };
@@ -47,6 +48,8 @@
 		5FEC550A192DA4FA00232A9A /* SIPopoverDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIPopoverDefine.h; sourceTree = "<group>"; };
 		7E0D4C311F4D7E15001A103A /* SIPopoverPresentationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIPopoverPresentationController.h; sourceTree = "<group>"; };
 		7E0D4C321F4D7E15001A103A /* SIPopoverPresentationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIPopoverPresentationController.m; sourceTree = "<group>"; };
+		7E0D4C341F4EC5E5001A103A /* SIPanInteractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIPanInteractor.h; sourceTree = "<group>"; };
+		7E0D4C351F4EC5E5001A103A /* SIPanInteractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIPanInteractor.m; sourceTree = "<group>"; };
 		7E391A9D18B32F290007A3DC /* SIPopoverExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SIPopoverExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E391AA018B32F290007A3DC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7E391AA218B32F290007A3DC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -186,6 +189,8 @@
 				5FEC550A192DA4FA00232A9A /* SIPopoverDefine.h */,
 				7E4FA2511F4CA6B0003402BD /* SIPopoverInteractor.h */,
 				7E4FA2521F4CA6B0003402BD /* SIPopoverInteractor.m */,
+				7E0D4C341F4EC5E5001A103A /* SIPanInteractor.h */,
+				7E0D4C351F4EC5E5001A103A /* SIPanInteractor.m */,
 				7E391AF518B344DC0007A3DC /* SIPopoverSegue.h */,
 				7E391AF618B344DC0007A3DC /* SIPopoverSegue.m */,
 				7E391AF718B344DC0007A3DC /* UIViewController+SIPopover.h */,
@@ -298,6 +303,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E0D4C361F4EC5E5001A103A /* SIPanInteractor.m in Sources */,
 				7E391AB118B32F290007A3DC /* AppDelegate.m in Sources */,
 				7E391AE918B332220007A3DC /* MainViewController.m in Sources */,
 				7E391AED18B333530007A3DC /* ContentViewController.m in Sources */,

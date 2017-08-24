@@ -15,6 +15,14 @@
     return UIOffsetZero;
 }
 
+- (nullable SIPopoverPresentationController *)si_popoverTransitionController
+{
+    if ([self.transitioningDelegate isKindOfClass:SIPopoverPresentationController.class]) {
+        return (SIPopoverPresentationController *)self.transitioningDelegate;
+    }
+    return nil;
+}
+
 - (void)si_presentPopover:(UIViewController *)viewController
 {
     [self si_presentPopover:viewController gravity:SIPopoverGravityNone transitionStyle:SIPopoverTransitionStyleSlideFromBottom backgroundEffect:SIPopoverBackgroundEffectDarken duration:0.4];
