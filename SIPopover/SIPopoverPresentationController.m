@@ -121,12 +121,31 @@
 {
     CGRect containerViewBounds = self.containerView.bounds;
     CGSize presentedViewContentSize = [self sizeForChildContentContainer:self.presentedViewController withParentContainerSize:containerViewBounds.size];
-    
-    // bottom
     CGRect presentedViewControllerFrame = containerViewBounds;
-    presentedViewControllerFrame.size.height = presentedViewContentSize.height;
-    presentedViewControllerFrame.origin.y = CGRectGetMaxY(containerViewBounds) - presentedViewContentSize.height;
-    // TODO: other positions
+    presentedViewControllerFrame.size = presentedViewContentSize;
+    
+    switch (self.gravity) {
+        case SIPopoverGravityNone:
+        {
+            presentedViewControllerFrame.origin.x = (CGRectGetWidth(containerViewBounds) - presentedViewContentSize.width) / 2;
+            presentedViewControllerFrame.origin.y = (CGRectGetHeight(containerViewBounds) - presentedViewContentSize.height) / 2;
+        }
+            break;
+        case SIPopoverGravityBottom:
+        {
+            presentedViewControllerFrame.origin.x = (CGRectGetWidth(containerViewBounds) - presentedViewContentSize.width) / 2;
+            presentedViewControllerFrame.origin.y = CGRectGetMaxY(containerViewBounds) - presentedViewContentSize.height;
+        }
+            break;
+        case SIPopoverGravityTop:
+        {
+            presentedViewControllerFrame.origin.x = (CGRectGetWidth(containerViewBounds) - presentedViewContentSize.width) / 2;
+            presentedViewControllerFrame.origin.y = 0;
+            break;
+        }
+        default:
+            break;
+    }
     
     return presentedViewControllerFrame;
 }
@@ -185,46 +204,128 @@
 {
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-    
     UIView *containerView = transitionContext.containerView;
-    
+    BOOL isPresenting = (fromViewController == self.presentingViewController);
     UIView *toView = [transitionContext viewForKey:UITransitionContextToViewKey];
     UIView *fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
-    
-    BOOL isPresenting = (fromViewController == self.presentingViewController);
-    
-    CGRect __unused fromViewInitialFrame = [transitionContext initialFrameForViewController:fromViewController];
-    CGRect fromViewFinalFrame = [transitionContext finalFrameForViewController:fromViewController];
-    CGRect toViewInitialFrame = [transitionContext initialFrameForViewController:toViewController];
+    UIView *targetView = isPresenting ? toView : fromView;
+    NSTimeInterval transitionDuration = [self transitionDuration:transitionContext];
     CGRect toViewFinalFrame = [transitionContext finalFrameForViewController:toViewController];
     
     [containerView addSubview:toView];
     
+    void (^completion)(BOOL finished) = ^(BOOL finished) {
+        BOOL wasCancelled = [transitionContext transitionWasCancelled];
+        [transitionContext completeTransition:!wasCancelled];
+    };
+    
     if (isPresenting) {
-        toViewInitialFrame.origin = CGPointMake(CGRectGetMinX(containerView.bounds), CGRectGetMaxY(containerView.bounds));
-        toViewInitialFrame.size = toViewFinalFrame.size;
-        toView.frame = toViewInitialFrame;
+        targetView.frame = toViewFinalFrame;
+
+        switch (self.transitionStyle) {
+            case SIPopoverTransitionStyleSlideFromBottom:
+            {
+                CGFloat offset = CGRectGetHeight(containerView.bounds) - targetView.frame.origin.y;
+                targetView.transform = CGAffineTransformMakeTranslation(0, offset);
+                
+                [UIView animateWithDuration:transitionDuration
+                                      delay:0
+                     usingSpringWithDamping:1
+                      initialSpringVelocity:0
+                                    options:UIViewAnimationOptionCurveLinear
+                                 animations:^{
+                                     targetView.transform = CGAffineTransformIdentity;
+                                 } completion:completion];
+            }
+                break;
+            case SIPopoverTransitionStyleSlideFromTop:
+            {
+                CGFloat offset = -(targetView.frame.origin.y + CGRectGetHeight(targetView.frame));
+                targetView.transform = CGAffineTransformMakeTranslation(0, offset);
+                
+                [UIView animateWithDuration:transitionDuration
+                                      delay:0
+                     usingSpringWithDamping:1
+                      initialSpringVelocity:0
+                                    options:UIViewAnimationOptionCurveLinear
+                                 animations:^{
+                                     targetView.transform = CGAffineTransformIdentity;
+                                 } completion:completion];
+            }
+                break;
+            case SIPopoverTransitionStyleBounce:
+            {
+                targetView.transform = CGAffineTransformMakeScale(0.8, 0.8);
+                targetView.alpha = 0;
+                
+                [UIView animateWithDuration:transitionDuration
+                                      delay:0
+                     usingSpringWithDamping:0.5
+                      initialSpringVelocity:0
+                                    options:UIViewAnimationOptionCurveEaseOut
+                                 animations:^{
+                                     targetView.transform = CGAffineTransformIdentity;
+                                     targetView.alpha = 1;
+                                 }
+                                 completion:completion];
+            }
+                break;
+            default:
+                break;
+        }
     } else {
-        fromViewFinalFrame = CGRectOffset(fromView.frame, 0, CGRectGetHeight(fromView.frame));
+        switch (self.transitionStyle) {
+            case SIPopoverTransitionStyleSlideFromBottom:
+            {
+                CGFloat offset = CGRectGetHeight(containerView.bounds) - targetView.frame.origin.y;
+                [UIView animateWithDuration:transitionDuration
+                                      delay:0
+                     usingSpringWithDamping:1
+                      initialSpringVelocity:0
+                                    options:UIViewAnimationOptionCurveLinear
+                                 animations:^{
+                                     targetView.transform = CGAffineTransformMakeTranslation(0, offset);
+                                 } completion:completion];
+            }
+                break;
+            case SIPopoverTransitionStyleSlideFromTop:
+            {
+                CGFloat offset = -(targetView.frame.origin.y + CGRectGetHeight(targetView.frame));
+                [UIView animateWithDuration:transitionDuration
+                                      delay:0
+                     usingSpringWithDamping:1
+                      initialSpringVelocity:0
+                                    options:UIViewAnimationOptionCurveLinear
+                                 animations:^{
+                                     targetView.transform = CGAffineTransformMakeTranslation(0, offset);
+                                 } completion:completion];
+            }
+                break;
+            case SIPopoverTransitionStyleBounce:
+            {
+                [UIView animateKeyframesWithDuration:transitionDuration
+                                               delay:0
+                                             options:UIViewKeyframeAnimationOptionCalculationModeLinear
+                                          animations:^{
+                                              [UIView addKeyframeWithRelativeStartTime:0
+                                                                      relativeDuration:0.2
+                                                                            animations:^{
+                                                                                targetView.transform = CGAffineTransformMakeScale(1.1, 1.1);
+                                                                            }];
+                                              [UIView addKeyframeWithRelativeStartTime:0.2
+                                                                      relativeDuration:0.8
+                                                                            animations:^{
+                                                                                fromView.transform = CGAffineTransformMakeScale(0.8, 0.8);
+                                                                                targetView.alpha = 0;
+                                                                            }];
+                                          }
+                                          completion:completion];
+            }
+                break;
+            default:
+                break;
+        }
     }
-    
-    NSTimeInterval transitionDuration = [self transitionDuration:transitionContext];
-    
-    [UIView animateWithDuration:transitionDuration
-                          delay:0
-         usingSpringWithDamping:1
-          initialSpringVelocity:0
-                        options:UIViewAnimationOptionCurveLinear
-                     animations:^{
-                         if (isPresenting) {
-                             toView.frame = toViewFinalFrame;
-                         } else {
-                             fromView.frame = fromViewFinalFrame;
-                         }
-                     } completion:^(BOOL finished) {
-                         BOOL wasCancelled = [transitionContext transitionWasCancelled];
-                         [transitionContext completeTransition:!wasCancelled];
-                     }];
     
 }
 

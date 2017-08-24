@@ -17,7 +17,6 @@
 @property (nonatomic, assign) SIPopoverBackgroundEffect backgroundEffect;
 @property (nonatomic, assign) NSTimeInterval duration;
 @property (nonatomic, assign) BOOL adjustTintMode; // default is NO
-@property (nonatomic, readonly, strong) SIPopoverInteractor *interactor;
 @property (nonatomic, strong) UIPanGestureRecognizer *gestureRecognizer;
 
 @end
