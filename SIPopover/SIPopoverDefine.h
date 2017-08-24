@@ -16,7 +16,6 @@ typedef NS_ENUM(NSInteger, SIPopoverBackgroundEffect) {
     SIPopoverBackgroundEffectNone = 0,
     SIPopoverBackgroundEffectDarken,
     SIPopoverBackgroundEffectLighten,
-    SIPopoverBackgroundEffectBlur,
     SIPopoverBackgroundEffectPushBack
 };
 

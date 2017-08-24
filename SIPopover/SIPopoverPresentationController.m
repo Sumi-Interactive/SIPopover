@@ -7,12 +7,15 @@
 //
 
 #import "SIPopoverPresentationController.h"
+#import "UIViewController+SIPopover.h"
 
 @interface SIPopoverPresentationController() <UIViewControllerAnimatedTransitioning>
 
 @property (nonatomic, strong) UIView *dimmingView;
-@property (nonatomic, strong) UIView *snapshotView;
-@property (nonatomic, strong) UIView *presentationWrappingView;
+@property (nonatomic, strong) UIView *presentedWrappingView;
+
+@property (nonatomic, strong) UIView *presentingWrappingView;
+@property (nonatomic, weak) UIView *presentingViewSuperView;
 
 @end
 
@@ -29,30 +32,41 @@
 
 - (UIView*)presentedView
 {
-    return self.presentationWrappingView;
+    return self.presentedWrappingView;
 }
 
 - (void)presentationTransitionWillBegin
 {
-    UIView *presentationWrapperView = [[UIView alloc] initWithFrame:self.frameOfPresentedViewInContainerView];
-    self.presentationWrappingView = presentationWrapperView;
+    // save for later use
+    self.presentingViewSuperView = self.presentingViewController.view.superview;
+    
+    // presentingWrapperView
+    // |- presentingViewControllerView (presentingViewController.view)
+    UIView *presentingWrappingView = [[UIView alloc] initWithFrame:self.containerView.bounds];
+    self.presentingWrappingView = presentingWrappingView;
+    presentingWrappingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [presentingWrappingView addSubview:self.presentingViewController.view];
+    [self.containerView addSubview:presentingWrappingView];
+    
+    UIView *presentedWrapperView = [[UIView alloc] initWithFrame:self.frameOfPresentedViewInContainerView];
+    self.presentedWrappingView = presentedWrapperView;
     
     // The default implementation of -presentedView returns
     // self.presentedViewController.view.
     UIView *presentedViewControllerView = [super presentedView];
     
-    // presentationWrapperView
+    // presentedWrapperView
     // |- presentedViewControllerView (presentedViewController.view)
     presentedViewControllerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    presentedViewControllerView.frame = presentationWrapperView.bounds;
-    [presentationWrapperView addSubview:presentedViewControllerView];
+    presentedViewControllerView.frame = presentedWrapperView.bounds;
+    [presentedWrapperView addSubview:presentedViewControllerView];
     
     UIView *dimmingView = [[UIView alloc] initWithFrame:self.containerView.bounds];
+    self.dimmingView = dimmingView;
     dimmingView.opaque = NO;
     dimmingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [dimmingView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dimmingViewTapped:)]];
-    self.dimmingView = dimmingView;
-    self.dimmingView.alpha = 0;
+    dimmingView.alpha = 0;
     [self.containerView addSubview:dimmingView];
     
     id<UIViewControllerTransitionCoordinator> transitionCoordinator = self.presentingViewController.transitionCoordinator;
@@ -74,26 +88,21 @@
             } completion:nil];
         }
             break;
-        case SIPopoverBackgroundEffectBlur:
-        {
-            
-        }
-            break;
         case SIPopoverBackgroundEffectPushBack:
         {
             self.dimmingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-            UIView *snapshotView = [self.presentingViewController.view snapshotViewAfterScreenUpdates:YES];
-            [self.containerView insertSubview:snapshotView belowSubview:self.dimmingView];
-            self.snapshotView = snapshotView;
-            self.presentingViewController.view.hidden = YES;
             [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
                 self.dimmingView.alpha = 1;
-                self.snapshotView.transform = CGAffineTransformMakeScale(0.92, 0.92);
+                self.presentingWrappingView.transform = CGAffineTransformMakeScale(0.92, 0.92);
             } completion:nil];
         }
             break;
         default:
             break;
+    }
+    
+    if (self.adjustTintMode) {
+        self.presentingWrappingView.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
     }
 }
 
@@ -109,11 +118,12 @@
         // removes the views created in -presentationTransitionWillBegin: from
         // the view hierarchy.  However, we still need to relinquish our strong
         // references to those view.
-        self.presentationWrappingView = nil;
+        self.presentingWrappingView = nil;
+        self.presentedWrappingView = nil;
         self.dimmingView = nil;
-        self.snapshotView = nil;
-        self.presentingViewController.view.hidden = NO;
-//        self.presentingViewController.view.transform = CGAffineTransformIdentity;
+        
+        // restore presenting view's super view
+        [self.presentingViewSuperView addSubview:self.presentingViewController.view];
     }
 }
 
@@ -123,12 +133,6 @@
     
     switch (self.backgroundEffect) {
         case SIPopoverBackgroundEffectDarken:
-        {
-            [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-                self.dimmingView.alpha = 0;
-            } completion:nil];
-        }
-            break;
         case SIPopoverBackgroundEffectLighten:
         {
             [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
@@ -136,18 +140,11 @@
             } completion:nil];
         }
             break;
-        case SIPopoverBackgroundEffectBlur:
-        {
-            
-        }
-            break;
         case SIPopoverBackgroundEffectPushBack:
         {
-//            UIView *presentingView = self.presentingViewController.view;
-//            presentingView.transform = CGAffineTransformMakeScale(0.92, 0.92);
             [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
                 self.dimmingView.alpha = 0;
-                self.snapshotView.transform = CGAffineTransformIdentity;
+                self.presentingWrappingView.transform = CGAffineTransformIdentity;
             } completion:nil];
         }
             break;
@@ -163,11 +160,12 @@
     // be NO in the case of a cancelled interactive transition.
     if (completed == YES)
     {
-        self.presentationWrappingView = nil;
+        self.presentingWrappingView = nil;
+        self.presentedWrappingView = nil;
         self.dimmingView = nil;
-        self.snapshotView = nil;
-        self.presentingViewController.view.hidden = NO;
-//        self.presentingViewController.view.transform = CGAffineTransformIdentity;
+        
+        // restore presenting view's super view
+        [self.presentingViewSuperView addSubview:self.presentingViewController.view];
     }
 }
 
@@ -219,6 +217,10 @@
             break;
     }
     
+    UIOffset offset = [self.presentedViewController si_popoverOffset];
+    presentedViewControllerFrame.origin.x += offset.horizontal;
+    presentedViewControllerFrame.origin.y += offset.vertical;
+    
     return presentedViewControllerFrame;
 }
 
@@ -227,7 +229,11 @@
     [super containerViewWillLayoutSubviews];
     
     self.dimmingView.frame = self.containerView.bounds;
-    self.presentationWrappingView.frame = self.frameOfPresentedViewInContainerView;
+    CGAffineTransform transform = self.presentingWrappingView.transform;
+    self.presentingWrappingView.transform = CGAffineTransformIdentity;
+    self.presentingWrappingView.frame = self.containerView.bounds;
+    self.presentingWrappingView.transform = transform;
+    self.presentedWrappingView.frame = self.frameOfPresentedViewInContainerView;
 }
 
 #pragma mark - Action

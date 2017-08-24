@@ -22,10 +22,10 @@
     return UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation) ? CGSizeMake(400, 200) : CGSizeMake(300, 300);
 }
 
-//- (UIOffset)si_popoverOffset
-//{
-//    return UIOffsetMake(0, -50);
-//}
+- (UIOffset)si_popoverOffset
+{
+    return UIOffsetMake(0, -50);
+}
 
 - (void)viewDidLoad
 {
