@@ -11,6 +11,7 @@
 @interface SIPopoverPresentationController() <UIViewControllerAnimatedTransitioning>
 
 @property (nonatomic, strong) UIView *dimmingView;
+@property (nonatomic, strong) UIView *snapshotView;
 @property (nonatomic, strong) UIView *presentationWrappingView;
 
 @end
@@ -47,18 +48,53 @@
     [presentationWrapperView addSubview:presentedViewControllerView];
     
     UIView *dimmingView = [[UIView alloc] initWithFrame:self.containerView.bounds];
-    dimmingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
     dimmingView.opaque = NO;
     dimmingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [dimmingView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dimmingViewTapped:)]];
     self.dimmingView = dimmingView;
+    self.dimmingView.alpha = 0;
     [self.containerView addSubview:dimmingView];
     
     id<UIViewControllerTransitionCoordinator> transitionCoordinator = self.presentingViewController.transitionCoordinator;
-    self.dimmingView.alpha = 0;
-    [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        self.dimmingView.alpha = 1;
-    } completion:NULL];
+    
+    switch (self.backgroundEffect) {
+        case SIPopoverBackgroundEffectDarken:
+        {
+            self.dimmingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+            [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+                self.dimmingView.alpha = 1;
+            } completion:nil];
+        }
+            break;
+        case SIPopoverBackgroundEffectLighten:
+        {
+            self.dimmingView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
+            [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+                self.dimmingView.alpha = 1;
+            } completion:nil];
+        }
+            break;
+        case SIPopoverBackgroundEffectBlur:
+        {
+            
+        }
+            break;
+        case SIPopoverBackgroundEffectPushBack:
+        {
+            self.dimmingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+            UIView *snapshotView = [self.presentingViewController.view snapshotViewAfterScreenUpdates:YES];
+            [self.containerView insertSubview:snapshotView belowSubview:self.dimmingView];
+            self.snapshotView = snapshotView;
+            self.presentingViewController.view.hidden = YES;
+            [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+                self.dimmingView.alpha = 1;
+                self.snapshotView.transform = CGAffineTransformMakeScale(0.92, 0.92);
+            } completion:nil];
+        }
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)presentationTransitionDidEnd:(BOOL)completed
@@ -75,6 +111,9 @@
         // references to those view.
         self.presentationWrappingView = nil;
         self.dimmingView = nil;
+        self.snapshotView = nil;
+        self.presentingViewController.view.hidden = NO;
+//        self.presentingViewController.view.transform = CGAffineTransformIdentity;
     }
 }
 
@@ -82,9 +121,39 @@
 {
     id<UIViewControllerTransitionCoordinator> transitionCoordinator = self.presentingViewController.transitionCoordinator;
     
-    [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        self.dimmingView.alpha = 0;
-    } completion:NULL];
+    switch (self.backgroundEffect) {
+        case SIPopoverBackgroundEffectDarken:
+        {
+            [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+                self.dimmingView.alpha = 0;
+            } completion:nil];
+        }
+            break;
+        case SIPopoverBackgroundEffectLighten:
+        {
+            [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+                self.dimmingView.alpha = 0;
+            } completion:nil];
+        }
+            break;
+        case SIPopoverBackgroundEffectBlur:
+        {
+            
+        }
+            break;
+        case SIPopoverBackgroundEffectPushBack:
+        {
+//            UIView *presentingView = self.presentingViewController.view;
+//            presentingView.transform = CGAffineTransformMakeScale(0.92, 0.92);
+            [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+                self.dimmingView.alpha = 0;
+                self.snapshotView.transform = CGAffineTransformIdentity;
+            } completion:nil];
+        }
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)dismissalTransitionDidEnd:(BOOL)completed
@@ -96,6 +165,9 @@
     {
         self.presentationWrappingView = nil;
         self.dimmingView = nil;
+        self.snapshotView = nil;
+        self.presentingViewController.view.hidden = NO;
+//        self.presentingViewController.view.transform = CGAffineTransformIdentity;
     }
 }
 
