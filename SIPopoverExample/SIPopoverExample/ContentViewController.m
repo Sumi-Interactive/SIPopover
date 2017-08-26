@@ -44,17 +44,14 @@
             interactor.isInteracting = true;
             [self dismissViewControllerAnimated:YES completion:nil];
             break;
-        case UIGestureRecognizerStateEnded:
-        case UIGestureRecognizerStateCancelled:
-        case UIGestureRecognizerStateFailed:
-            interactor.isInteracting = false;
+        case UIGestureRecognizerStateChanged:
             break;
         default:
+            interactor.isInteracting = false;
             break;
     }
     
-    // Remaining cases are handled by the
-    // SIPopoverPresentationController.
+    // Remaining cases are handled by SIPanInteractor.
 }
 
 - (IBAction)dismissAction:(id)sender

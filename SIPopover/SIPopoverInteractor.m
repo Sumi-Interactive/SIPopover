@@ -17,7 +17,7 @@
 
 - (void)startInteractiveTransition:(id<UIViewControllerContextTransitioning>)transitionContext
 {
-    NSAssert(self.isInteracting == true, @"isInteracting must be true");
+//    NSAssert(self.isInteracting == true, @"isInteracting must be true");
     
     self.transitionContext = transitionContext;
     [super startInteractiveTransition:transitionContext];
