@@ -47,7 +47,6 @@
     presentationController.transitionStyle = transitionStyle;
     presentationController.backgroundEffect = backgroundEffect;
     presentationController.duration = duration;
-    presentationController.adjustTintMode = YES;
     
     [self presentViewController:viewController animated:YES completion:nil];
 }

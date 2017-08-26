@@ -34,7 +34,6 @@
     CGFloat height = CGRectGetHeight(target.bounds) * 2;
     
     CGFloat percent = translation.y / height;
-    NSLog(@"%.3f", percent);
     return percent;
 }
 
