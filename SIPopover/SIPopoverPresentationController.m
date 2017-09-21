@@ -15,7 +15,7 @@
 @property (nonatomic, strong) UIView *presentedWrappingView;
 
 @property (nonatomic, strong) UIView *presentingWrappingView;
-@property (nonatomic, weak) UIView *presentingViewSuperView;
+@property (nonatomic, weak) UIView *presentingViewSuperview;
 
 @end
 
@@ -37,16 +37,24 @@
 
 - (void)presentationTransitionWillBegin
 {
-    // save for later use
-    self.presentingViewSuperView = self.presentingViewController.view.superview;
+    // NOTE:
+    // SIPopoverBackgroundEffectPushBack has a known issue as follows:
+    // when popover presentation is nested, the presenting frame is incorrect when view size changed (rotated)
     
-    // presentingWrapperView
-    // |- presentingViewControllerView (presentingViewController.view)
-    UIView *presentingWrappingView = [[UIView alloc] initWithFrame:self.containerView.bounds];
-    self.presentingWrappingView = presentingWrappingView;
-    presentingWrappingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [presentingWrappingView addSubview:self.presentingViewController.view];
-    [self.containerView addSubview:presentingWrappingView];
+    // save super view for later use
+    self.presentingViewSuperview = self.presentingViewController.view.superview;
+    if (self.backgroundEffect == SIPopoverBackgroundEffectPushBack) {
+        // presentingWrapperView
+        // |- presentingViewControllerView (presentingViewController.view)
+        UIView *presentingWrappingView = [[UIView alloc] initWithFrame:self.presentingViewSuperview.frame];
+        self.presentingWrappingView = presentingWrappingView;
+        presentingWrappingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        [presentingWrappingView addSubview:self.presentingViewController.view];
+        [self.containerView addSubview:presentingWrappingView];
+    } else {
+        // presentingWrapperView = presentingViewController.view
+        self.presentedWrappingView = self.presentingViewController.view;
+    }
     
     UIView *presentedWrapperView = [[UIView alloc] initWithFrame:self.frameOfPresentedViewInContainerView];
     self.presentedWrappingView = presentedWrapperView;
@@ -123,7 +131,7 @@
         self.dimmingView = nil;
         
         // restore presenting view's super view
-        [self.presentingViewSuperView addSubview:self.presentingViewController.view];
+        [self.presentingViewSuperview addSubview:self.presentingViewController.view];
     }
 }
 
@@ -165,7 +173,7 @@
         self.dimmingView = nil;
         
         // restore presenting view's super view
-        [self.presentingViewSuperView addSubview:self.presentingViewController.view];
+        [self.presentingViewSuperview addSubview:self.presentingViewController.view];
     }
 }
 
@@ -231,7 +239,7 @@
     self.dimmingView.frame = self.containerView.bounds;
     CGAffineTransform transform = self.presentingWrappingView.transform;
     self.presentingWrappingView.transform = CGAffineTransformIdentity;
-    self.presentingWrappingView.frame = self.containerView.bounds;
+    self.presentingWrappingView.frame = self.presentingViewSuperview.frame;
     self.presentingWrappingView.transform = transform;
     self.presentedWrappingView.frame = self.frameOfPresentedViewInContainerView;
 }

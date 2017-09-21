@@ -59,4 +59,13 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (IBAction)presentAction:(id)sender
+{
+    UIViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ContentViewController"];
+    [self si_presentPopover:viewController
+                    gravity:SIPopoverGravityNone
+            transitionStyle:SIPopoverTransitionStyleSlideFromBottom
+           backgroundEffect:SIPopoverBackgroundEffectDarken];
+}
+
 @end
